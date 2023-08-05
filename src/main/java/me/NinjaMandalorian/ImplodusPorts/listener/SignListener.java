@@ -21,7 +21,7 @@ public class SignListener implements Listener {
 	 */
 	@EventHandler
 	public void onSignChange(SignChangeEvent e) {
-		Logger.debug("SignChangeEvent");
+		//Logger.debug("SignChangeEvent");
 		Player player = e.getPlayer();
 		Block block = e.getBlock();
 

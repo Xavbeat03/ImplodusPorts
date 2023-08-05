@@ -134,7 +134,7 @@ public class Port {
 
 	public List<Port> getNearby() {
 		ArrayList<Port> returnList = new ArrayList<Port>();
-		Logger.debug("GETTING NEARBY FOR " + this.id);
+		//Logger.debug("GETTING NEARBY FOR " + this.id);
 		for (Port port : activePorts.values()) {
 			if (port.equals(this)) {
 				if (port.getTeleportLocation().getWorld() != this.signLocation.getWorld()) {

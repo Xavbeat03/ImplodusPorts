@@ -70,7 +70,7 @@ public class PortHelper {
 	}
 
 	public static List<String> formatSign(Port port) {
-		Logger.debug("FORMAT SIGN FOR : " + port.getDisplayName());
+		//Logger.debug("FORMAT SIGN FOR : " + port.getDisplayName());
 
 		ArrayList<String> returnList = new ArrayList<String>();
 

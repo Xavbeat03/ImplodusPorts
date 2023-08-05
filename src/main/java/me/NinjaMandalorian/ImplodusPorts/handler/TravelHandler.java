@@ -44,7 +44,7 @@ public class TravelHandler {
 	 * @param args        - Extra arguments
 	 */
 	public static void startJourney(Player player, Port origin, Port destination, String... args) {
-		Logger.debug(player.getName() + " RUN PORT;" + origin.getId());
+		//Logger.debug(player.getName() + " RUN PORT;" + origin.getId());
 		List<Port> playerJourney = findPath(player, origin, destination);
 		if (playerJourney == null) {
 			player.sendMessage("" + ChatColor.RED + "There is no route to this port.");
@@ -102,7 +102,7 @@ public class TravelHandler {
 		if (playerJourney == null)
 			return;
 
-		Logger.debug("Player " + player.getName() + " departing from " + playerJourney.get(0).getDisplayName());
+		//Logger.debug("Player " + player.getName() + " departing from " + playerJourney.get(0).getDisplayName());
 
 		// Economy notif & withdraw
 		Double cost = getTravelCost(journeys.get(player).get(0), journeys.get(player).get(1));

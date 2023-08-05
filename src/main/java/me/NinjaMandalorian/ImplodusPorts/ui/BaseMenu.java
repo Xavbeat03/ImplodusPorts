@@ -132,7 +132,7 @@ public class BaseMenu implements InventoryHolder {
 	}
 
 	private void loadPage(int pageNum) {
-		Logger.debug("LOADING PAGE " + pageNum);
+		//Logger.debug("LOADING PAGE " + pageNum);
 		List<Integer> slotList = Arrays.asList(
 			10, 11, 12, 13, 14, 15, 16,
 			19, 20, 21, 22, 23, 24, 25,
