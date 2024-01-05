@@ -9,7 +9,7 @@ depend: [ Vault ]
 commands:
   implodusports:
     description: Primary command
-    softdepend: [ Vault ]
+    softdepend: [ Vault, Towny ]
     aliases:
       - iports
   

@@ -1,5 +1,6 @@
 package me.NinjaMandalorian.ImplodusPorts;
 
+import com.palmergames.bukkit.towny.TownyAPI;
 import me.NinjaMandalorian.ImplodusPorts.command.ImplodusPortsCommands;
 import me.NinjaMandalorian.ImplodusPorts.data.DataManager;
 import me.NinjaMandalorian.ImplodusPorts.data.PortDataManager;
@@ -27,6 +28,8 @@ public class ImplodusPorts extends JavaPlugin {
 	private static ImplodusPorts instance;
 	private BukkitAudiences adventure;
 
+	private static TownyAPI townyAPI;
+
 	public static ImplodusPorts getInstance() {
 		return instance;
 	}
@@ -45,6 +48,7 @@ public class ImplodusPorts extends JavaPlugin {
 		Settings.init();
 		Port.initPorts();
 		setupEconomy();
+		setupTowny();
 
 		new ImplodusPortsCommands();
 
@@ -71,6 +75,31 @@ public class ImplodusPorts extends JavaPlugin {
 		}
 		econ = rsp.getProvider();
 		return econ != null;
+	}
+
+	/**
+	 *  Checks if Towny is installed and sets up TownyAPI
+	 */
+	private void setupTowny() {
+		if (!(getServer().getPluginManager().getPlugin("Towny") == null)) {
+			townyAPI = TownyAPI.getInstance();
+		}
+	}
+
+	/**
+	 * Gets the TownyAPI
+	 * @return TownyAPI or null if Towny is not installed
+	 */
+	public TownyAPI getTownyAPI() {
+		return townyAPI;
+	}
+
+	/**
+	 * Checks if Towny is installed
+	 * @return true if Towny is installed, false otherwise
+	 */
+	public boolean isTownyEnabled() {
+		return townyAPI != null;
 	}
 
 	public BukkitAudiences getAdventure() {

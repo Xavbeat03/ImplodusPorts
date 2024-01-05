@@ -1,5 +1,8 @@
 package me.NinjaMandalorian.ImplodusPorts.object;
 
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.Town;
+import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
 import me.NinjaMandalorian.ImplodusPorts.Logger;
 import me.NinjaMandalorian.ImplodusPorts.data.PortDataManager;
 import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
@@ -28,18 +31,25 @@ public class Port {
 	private int size;
 	private String displayName;
 
+	private Town town;
+
+
 	/**
 	 * Constructor for individual ports.
 	 *
 	 * @param size
 	 * @param displayName
 	 */
-	public Port(String id, Location sLocation, Location tLocation, int size, String displayName) {
+	public Port(String id, Location sLocation, Location tLocation, int size, String displayName) throws NotRegisteredException {
 		this.id = id;
 		this.signLocation = sLocation;
 		this.teleportLocation = tLocation;
 		this.size = size;
 		this.displayName = displayName;
+		this.town = null;
+		if(ImplodusPorts.getInstance().isTownyEnabled() &&  ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation) != null) {
+			town = ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation).getTown();
+		}
 	}
 
 	public Port(String id, Location sLocation, Location tLocation, int size) {
