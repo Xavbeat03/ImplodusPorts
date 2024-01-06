@@ -48,11 +48,16 @@ public class Port {
 		this.displayName = displayName;
 		this.town = null;
 		if(ImplodusPorts.getInstance().isTownyEnabled() &&  ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation) != null) {
-			town = ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation).getTown();
+			try {
+				this.town = ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation).getTown();
+			}
+			catch(NotRegisteredException e) {
+				this.town = null;
+			}
 		}
 	}
 
-	public Port(String id, Location sLocation, Location tLocation, int size) {
+	public Port(String id, Location sLocation, Location tLocation, int size) throws NotRegisteredException {
 		this(id, sLocation, tLocation, size, id);
 	}
 
