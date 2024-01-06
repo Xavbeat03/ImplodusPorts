@@ -51,7 +51,7 @@ public class Port {
 			try {
 				this.town = ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation).getTown();
 			}
-			catch(NotRegisteredException e) {
+			catch(NullPointerException e) {
 				this.town = null;
 			}
 		}
@@ -123,6 +123,15 @@ public class Port {
 	public static void portDestroy(Player player, Port port) {
 		player.sendMessage("DESTROYED PORT");
 		Logger.log("Player " + player != null ? player.getName() : "CONSOLE" + " destroyed port " + port.getId());
+		portDestroy(port);
+	}
+
+	/**
+	 * Destroys a port
+	 * @param port - Port to destroy
+	 */
+	public static void portDestroy(Port port) {
+		Logger.log("Destroyed port " + port.getId());
 		activePorts.remove(port.getId());
 		PortDataManager.deletePort(port);
 	}
@@ -145,6 +154,10 @@ public class Port {
 
 	public String getDisplayName() {
 		return this.displayName;
+	}
+
+	public Town getTown() {
+		return this.town;
 	}
 
 	public List<Port> getNearby() {
