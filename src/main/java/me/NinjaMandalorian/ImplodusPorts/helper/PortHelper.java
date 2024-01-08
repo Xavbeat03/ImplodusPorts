@@ -1,5 +1,6 @@
 package me.NinjaMandalorian.ImplodusPorts.helper;
 
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import me.NinjaMandalorian.ImplodusPorts.Logger;
 import me.NinjaMandalorian.ImplodusPorts.handler.TravelHandler;
 import me.NinjaMandalorian.ImplodusPorts.object.Port;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 public class PortHelper {
+
 
 	/**
 	 * Orders ports for display. <br>
@@ -59,14 +61,20 @@ public class PortHelper {
 	}
 
 	public static Port portFromSign(Player player, Block block, String[] lines) {
-		lines[1] = lines[1].replace(':', ' ');
-		String id = lines[1].toLowerCase().strip().replace(' ', '_');
-		String displayName = StringHelper.capitalize(lines[1].strip().replace('_', ' '));
-		Location signLocation = block.getLocation();
-		Location teleportLocation = squareLocation(player.getLocation());
+		try {
+			lines[1] = lines[1].replace(':', ' ');
+			String id = lines[1].toLowerCase().strip().replace(' ', '_');
+			String displayName = StringHelper.capitalize(lines[1].strip().replace('_', ' '));
+			Location signLocation = block.getLocation();
+			Location teleportLocation = squareLocation(player.getLocation());
 
-		Port port = new Port(id, signLocation, teleportLocation, 1, displayName);
-		return port;
+			Port port = new Port(id, signLocation, teleportLocation, 1, displayName);
+			return port;
+		}
+		catch (NotRegisteredException e){
+			Logger.debug("Port creation failed.");
+			return null;
+		}
 	}
 
 	public static List<String> formatSign(Port port) {

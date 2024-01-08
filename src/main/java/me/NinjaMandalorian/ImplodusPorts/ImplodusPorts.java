@@ -4,10 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import me.NinjaMandalorian.ImplodusPorts.command.ImplodusPortsCommands;
 import me.NinjaMandalorian.ImplodusPorts.data.DataManager;
 import me.NinjaMandalorian.ImplodusPorts.data.PortDataManager;
-import me.NinjaMandalorian.ImplodusPorts.listener.BlockListener;
-import me.NinjaMandalorian.ImplodusPorts.listener.InventoryListener;
-import me.NinjaMandalorian.ImplodusPorts.listener.PlayerListener;
-import me.NinjaMandalorian.ImplodusPorts.listener.SignListener;
+import me.NinjaMandalorian.ImplodusPorts.listener.*;
 import me.NinjaMandalorian.ImplodusPorts.object.Port;
 import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -57,6 +54,9 @@ public class ImplodusPorts extends JavaPlugin {
 		PluginManager.registerEvents(new PlayerListener(), instance);
 		PluginManager.registerEvents(new SignListener(), instance);
 		PluginManager.registerEvents(new BlockListener(), instance);
+		if(isTownyEnabled()) {
+			PluginManager.registerEvents(new TownListener(), instance);
+		}
 	}
 
 	public void onDisable() {

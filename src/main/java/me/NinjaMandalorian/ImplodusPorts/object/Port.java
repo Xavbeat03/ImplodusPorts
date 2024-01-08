@@ -100,9 +100,28 @@ public class Port {
 		return getPort(location.getBlock());
 	}
 
+	/**
+	 * Gets a port by block
+	 * @param block - Block to get port for
+	 * @return Port or null
+	 */
 	public static Port getPort(Block block) {
 		for (Port port : activePorts.values()) {
 			if (port.getSignLocation().getBlock().equals(block)) {
+				return port;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets a port by town
+	 * @param town - Town to get port for
+	 * @return Port or null
+	 */
+	public static Port getPort(Town town) {
+		for (Port port : activePorts.values()) {
+			if (port.getTown() != null && port.getTown().equals(town)) {
 				return port;
 			}
 		}
@@ -131,6 +150,7 @@ public class Port {
 	 * @param port - Port to destroy
 	 */
 	public static void portDestroy(Port port) {
+		if(port== null) return;
 		Logger.log("Destroyed port " + port.getId());
 		activePorts.remove(port.getId());
 		PortDataManager.deletePort(port);

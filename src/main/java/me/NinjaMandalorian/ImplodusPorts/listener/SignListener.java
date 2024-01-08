@@ -29,6 +29,12 @@ public class SignListener implements Listener {
 
 		if (player.hasPermission("implodusports.admin.create")) {
 			Port port = PortHelper.portFromSign(player, block, e.getLines());
+			if(port == null) {
+				player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9[&6iPorts&9] &cPort creation failed due to error."));
+				Logger.log("Port creation failed due to error.");
+				e.setCancelled(true);
+				return;
+			}
 			Port.portCreate(player, port);
 			List<String> formattedSign = PortHelper.formatSign(port);
 			for (int i = 0; i < 4; i++) {
