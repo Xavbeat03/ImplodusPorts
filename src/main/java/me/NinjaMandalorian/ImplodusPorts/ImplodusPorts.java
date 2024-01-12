@@ -10,6 +10,7 @@ import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -80,9 +81,14 @@ public class ImplodusPorts extends JavaPlugin {
 	/**
 	 *  Checks if Towny is installed and sets up TownyAPI
 	 */
-	private void setupTowny() {
-		if (!(getServer().getPluginManager().getPlugin("Towny") == null)) {
+	private static void setupTowny() {
+		if ((ImplodusPorts.getInstance().getServer().getPluginManager().getPlugin("Towny") != null)) {
 			townyAPI = TownyAPI.getInstance();
+			Bukkit.getLogger().info("TownyAPI is enabled");
+		}
+		else {
+			townyAPI = null;
+			Bukkit.getLogger().info("TownyAPI is disabled");
 		}
 	}
 
