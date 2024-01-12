@@ -153,6 +153,9 @@ public class Port {
 		if(port== null) return;
 		Logger.log("Destroyed port " + port.getId());
 		activePorts.remove(port.getId());
+		if(port.getSignLocation().getBlock().getType() != Material.AIR) {
+			port.getSignLocation().getBlock().setType(Material.AIR);
+		}
 		PortDataManager.deletePort(port);
 	}
 
