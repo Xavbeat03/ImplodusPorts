@@ -149,7 +149,7 @@ public class Port {
 	 * Destroys a port
 	 * @param port - Port to destroy
 	 */
-	public static void portDestroy(Port port) {
+	public static synchronized void portDestroy(Port port) {
 		if(port== null) return;
 		Logger.log("Destroyed port " + port.getId());
 		activePorts.remove(port.getId());
