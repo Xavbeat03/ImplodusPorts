@@ -1,8 +1,12 @@
 package me.NinjaMandalorian.ImplodusPorts.object;
 
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.Town;
+import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
 import me.NinjaMandalorian.ImplodusPorts.Logger;
 import me.NinjaMandalorian.ImplodusPorts.data.PortDataManager;
 import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,21 +32,33 @@ public class Port {
 	private int size;
 	private String displayName;
 
+	private Town town;
+
+
 	/**
 	 * Constructor for individual ports.
 	 *
 	 * @param size
 	 * @param displayName
 	 */
-	public Port(String id, Location sLocation, Location tLocation, int size, String displayName) {
+	public Port(String id, Location sLocation, Location tLocation, int size, String displayName) throws NotRegisteredException {
 		this.id = id;
 		this.signLocation = sLocation;
 		this.teleportLocation = tLocation;
 		this.size = size;
 		this.displayName = displayName;
+		this.town = null;
+		if(ImplodusPorts.getInstance().isTownyEnabled() &&  ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation) != null) {
+			try {
+				this.town = ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation).getTown();
+			}
+			catch(NullPointerException e) {
+				this.town = null;
+			}
+		}
 	}
 
-	public Port(String id, Location sLocation, Location tLocation, int size) {
+	public Port(String id, Location sLocation, Location tLocation, int size) throws NotRegisteredException {
 		this(id, sLocation, tLocation, size, id);
 	}
 
@@ -85,9 +101,28 @@ public class Port {
 		return getPort(location.getBlock());
 	}
 
+	/**
+	 * Gets a port by block
+	 * @param block - Block to get port for
+	 * @return Port or null
+	 */
 	public static Port getPort(Block block) {
 		for (Port port : activePorts.values()) {
 			if (port.getSignLocation().getBlock().equals(block)) {
+				return port;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets a port by town
+	 * @param town - Town to get port for
+	 * @return Port or null
+	 */
+	public static Port getPort(Town town) {
+		for (Port port : activePorts.values()) {
+			if (port.getTown() != null && port.getTown().equals(town)) {
 				return port;
 			}
 		}
@@ -99,16 +134,32 @@ public class Port {
 	}
 
 	public static void portCreate(Player player, Port port) {
-		player.sendMessage("CREATED PORT");
+		player.sendMessage("[IPorts] CREATED PORT");
 		Logger.log(("Player " + player != null ? player.getName() : "CONSOLE") + " created port " + port.getId());
 		activePorts.put(port.getId(), port);
 		PortDataManager.savePort(port);
 	}
 
 	public static void portDestroy(Player player, Port port) {
-		player.sendMessage("DESTROYED PORT");
+		player.sendMessage("[IPorts]  DESTROYED PORT");
 		Logger.log("Player " + player != null ? player.getName() : "CONSOLE" + " destroyed port " + port.getId());
+		portDestroy(port);
+	}
+
+	/**
+	 * Destroys a port
+	 * @param port - Port to destroy
+	 */
+	public static synchronized void portDestroy(Port port) {
+		if(port== null) return;
+		Logger.log("[IPorts] Destroyed port " + port.getId());
 		activePorts.remove(port.getId());
+		if(port.getSignLocation().getBlock().getType() != Material.AIR) {
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ImplodusPorts.getInstance(), () -> {
+				port.getSignLocation().getBlock().setType(Material.AIR, false);
+			});
+
+		}
 		PortDataManager.deletePort(port);
 	}
 
@@ -130,6 +181,10 @@ public class Port {
 
 	public String getDisplayName() {
 		return this.displayName;
+	}
+
+	public Town getTown() {
+		return this.town;
 	}
 
 	public List<Port> getNearby() {
@@ -176,13 +231,10 @@ public class Port {
 				continue;
 
 			}
-//			if (distance > port2Range) {
-//				continue;
-//			}
 			returnList.add(port);
 		}
 
-		if (returnList.size() == 0) {
+		if (returnList.isEmpty()) {
 			Port closestPort = null;
 			for (Port port : activePorts.values()) {
 				if (closestPort == null || this.distanceTo(closestPort) > this.distanceTo(port)) {

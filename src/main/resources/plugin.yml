@@ -1,15 +1,15 @@
 name: ImplodusPorts
 main: me.NinjaMandalorian.ImplodusPorts.ImplodusPorts
-version: 1.0.1
+version: 1.0.5
 api-version: 1.19
 description: Interactive port plugin for travelling across the world.
-author: NinjaMandalorian
+author: NinjaMandalorian, Xavbeat03
 depend: [ Vault ]
 
 commands:
   implodusports:
     description: Primary command
-    softdepend: [ Vault ]
+    softdepend: [ Vault, Towny ]
     aliases:
       - iports
   

@@ -1,5 +1,6 @@
 package me.NinjaMandalorian.ImplodusPorts.data;
 
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import me.NinjaMandalorian.ImplodusPorts.object.Port;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,16 +33,20 @@ public class PortDataManager {
 		for (String portData : portsData) {
 			String[] splitData = splitWithQuotes(portData);
 			if (splitData.length < 5 || splitData[0].equalsIgnoreCase("id")) continue;
+			try {
+				Port port = new Port(
+					splitData[0],
+					stringToLocation(splitData[1]),
+					stringToLocation(splitData[2]),
+					Integer.parseInt(splitData[3]),
+					splitData[4]
+				);
 
-			Port port = new Port(
-				splitData[0],
-				stringToLocation(splitData[1]),
-				stringToLocation(splitData[2]),
-				Integer.parseInt(splitData[3]),
-				splitData[4]
-			);
-
-			returnData.put(splitData[0], port);
+				returnData.put(splitData[0], port);
+			}
+			catch (NotRegisteredException e){
+				Bukkit.getLogger().info("Port " + splitData[0] + " had an error while loading.");
+			}
 		}
 
 		return returnData;

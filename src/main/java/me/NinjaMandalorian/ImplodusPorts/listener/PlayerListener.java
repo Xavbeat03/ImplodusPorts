@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -84,5 +85,18 @@ public class PlayerListener implements Listener {
 				}, 100L);
 			}
 		}
+	}
+
+	/**
+	 * Cancels port journey if player is damaged.
+	 * @param e - entity damage event
+	 */
+	@EventHandler
+	public void onPlayerDamaged(EntityDamageEvent e) {
+		if (!(e.getEntity() instanceof Player)) return;
+		Player player = (Player) e.getEntity();
+		Port port = TravelHandler.getCurrentPort(player);
+		if (port == null) return;
+		TravelHandler.cancelJourney(player);
 	}
 }
