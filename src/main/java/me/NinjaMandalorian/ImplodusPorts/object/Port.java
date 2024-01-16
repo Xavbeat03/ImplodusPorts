@@ -6,6 +6,7 @@ import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
 import me.NinjaMandalorian.ImplodusPorts.Logger;
 import me.NinjaMandalorian.ImplodusPorts.data.PortDataManager;
 import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -154,7 +155,10 @@ public class Port {
 		Logger.log("Destroyed port " + port.getId());
 		activePorts.remove(port.getId());
 		if(port.getSignLocation().getBlock().getType() != Material.AIR) {
-			port.getSignLocation().getBlock().setType(Material.AIR, false);
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ImplodusPorts.getInstance(), () -> {
+				port.getSignLocation().getBlock().setType(Material.AIR, false);
+			});
+
 		}
 		PortDataManager.deletePort(port);
 	}
