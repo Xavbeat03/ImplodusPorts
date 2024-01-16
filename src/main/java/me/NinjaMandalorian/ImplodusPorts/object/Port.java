@@ -134,14 +134,14 @@ public class Port {
 	}
 
 	public static void portCreate(Player player, Port port) {
-		player.sendMessage("CREATED PORT");
+		player.sendMessage("[IPorts] CREATED PORT");
 		Logger.log(("Player " + player != null ? player.getName() : "CONSOLE") + " created port " + port.getId());
 		activePorts.put(port.getId(), port);
 		PortDataManager.savePort(port);
 	}
 
 	public static void portDestroy(Player player, Port port) {
-		player.sendMessage("DESTROYED PORT");
+		player.sendMessage("[IPorts]  DESTROYED PORT");
 		Logger.log("Player " + player != null ? player.getName() : "CONSOLE" + " destroyed port " + port.getId());
 		portDestroy(port);
 	}
@@ -152,7 +152,7 @@ public class Port {
 	 */
 	public static synchronized void portDestroy(Port port) {
 		if(port== null) return;
-		Logger.log("Destroyed port " + port.getId());
+		Logger.log("[IPorts] Destroyed port " + port.getId());
 		activePorts.remove(port.getId());
 		if(port.getSignLocation().getBlock().getType() != Material.AIR) {
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ImplodusPorts.getInstance(), () -> {
