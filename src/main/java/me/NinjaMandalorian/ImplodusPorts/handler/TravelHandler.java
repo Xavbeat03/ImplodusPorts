@@ -106,6 +106,12 @@ public class TravelHandler {
 
 		// Economy notif & withdraw
 		Double cost = getTravelCost(journeys.get(player).get(0), journeys.get(player).get(1));
+
+		if(ImplodusPorts.getEconomy().getBalance(player) < cost){
+			player.sendMessage(ChatColor.RED + "You need " + ChatColor.GOLD + ImplodusPorts.getEconomy().format(cost) + ChatColor.RED + " for tickets.");
+			cancelJourney(player);
+			return;
+		}
 		player.sendMessage(StringHelper.color("&aYou bought a ticket for " + ImplodusPorts.getEconomy().format(cost)));
 		ImplodusPorts.getEconomy().withdrawPlayer((OfflinePlayer) player, cost);
 
