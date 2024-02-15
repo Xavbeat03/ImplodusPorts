@@ -7,6 +7,7 @@ import me.NinjaMandalorian.ImplodusPorts.Logger;
 import me.NinjaMandalorian.ImplodusPorts.data.PortDataManager;
 import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -94,7 +95,7 @@ public class Port {
 	}
 
 	public static Port getPort(String id) {
-		return activePorts.get(id);
+		return activePorts.getOrDefault(id, null);
 	}
 
 	public static Port getPort(Location location) {
@@ -134,14 +135,14 @@ public class Port {
 	}
 
 	public static void portCreate(Player player, Port port) {
-		player.sendMessage("[IPorts] CREATED PORT");
+		player.sendMessage("%s[IPorts]%s CREATED PORT".formatted(ChatColor.RED, ChatColor.WHITE));
 		Logger.log(("Player " + player != null ? player.getName() : "CONSOLE") + " created port " + port.getId());
 		activePorts.put(port.getId(), port);
 		PortDataManager.savePort(port);
 	}
 
 	public static void portDestroy(Player player, Port port) {
-		player.sendMessage("[IPorts]  DESTROYED PORT");
+		player.sendMessage("%s[IPorts]%s DESTROYED PORT".formatted(ChatColor.RED, ChatColor.WHITE));
 		Logger.log("Player " + player != null ? player.getName() : "CONSOLE" + " destroyed port " + port.getId());
 		portDestroy(port);
 	}
@@ -151,7 +152,7 @@ public class Port {
 	 * @param port - Port to destroy
 	 */
 	public static synchronized void portDestroy(Port port) {
-		if(port== null) return;
+		if(port == null) return;
 		Logger.log("[IPorts] Destroyed port " + port.getId());
 		activePorts.remove(port.getId());
 		if(port.getSignLocation().getBlock().getType() != Material.AIR) {
