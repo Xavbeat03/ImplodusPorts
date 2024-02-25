@@ -13,8 +13,23 @@ A UI based port system for Minecraft.
 
 ## Creating a port
 
-To create a port, place a sign and do the following:
+Admins can create ports by doing the following:
+* Place a sign
 * Label the top line ```[Ports]```
 * Label the second line the port name
+
+Afterwards, the sign should become auto-formatted, and the plugin will inform you that the port was created.
+
+## Using a port
+
+To use a port, do the following:
+* Right-click it
+* Select the port you wish to travel to
+* Pay the needed funds and travel.
+
+## Dependencies
+
+* Towny 0.98.6.0 and up
+* VaultAPI
 
 **Note:** these commands can only be run by individuals with the appropriate admin permissions.
