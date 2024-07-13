@@ -28,7 +28,8 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 	private static final List<String> portTabCompletes = Arrays.asList(
 		"changesize",
 		"reload",
-		"destroy"
+		"destroy",
+		"next"
 	);
 
 
@@ -114,6 +115,8 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 						if(args.length == 1) return null;
 						return NameUtil.filterByStart(portIds, args[1]);
 					case "reload":
+						return null;
+					case "next":
 						return null;
 					default:
 						return NameUtil.filterByStart(portTabCompletes, args[0]);

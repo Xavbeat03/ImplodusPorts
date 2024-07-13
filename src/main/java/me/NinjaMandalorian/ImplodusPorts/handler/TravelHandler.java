@@ -80,16 +80,16 @@ public class TravelHandler {
 	 */
 
 	public static void scheduleNext(Player player) {
-		if (enroutePlayers.contains(player))
-			return;
-		enroutePlayers.add(player);
+			if (enroutePlayers.contains(player) && !journeys.containsKey(player))
+				return;
+			enroutePlayers.add(player);
 
-		List<Port> journey = journeys.get(player);
-		Long time = getWait(journey.get(0), journey.get(1));
+			List<Port> journey = journeys.get(player);
+			Long time = getWait(journey.get(0), journey.get(1));
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(ImplodusPorts.getInstance(), () -> next(player), time);
-		player.sendMessage(ChatColor.translateAlternateColorCodes('&',
-			"&aYou will be teleported in &d" + time / 20 + "&a seconds."));
+			Bukkit.getScheduler().scheduleSyncDelayedTask(ImplodusPorts.getInstance(), () -> next(player), time);
+			player.sendMessage(ChatColor.translateAlternateColorCodes('&',
+				"&aYou will be teleported in &d" + time / 20 + "&a seconds."));
 	}
 
 	/**
