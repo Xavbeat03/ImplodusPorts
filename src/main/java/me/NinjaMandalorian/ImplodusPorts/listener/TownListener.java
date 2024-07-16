@@ -17,18 +17,14 @@ public class TownListener implements Listener{
 	 */
 	@EventHandler
 	public void onTownRuinedEvent(TownRuinedEvent e) {
-		if(ImplodusPorts.getInstance().isTownyEnabled()){
-			Logger.log("[IPorts] Town ruined event, deleting relevant ports.");
-			Port.portDestroy(Port.getPort(e.getTown()));
-		}
+		Logger.log("[IPorts] Town ruined event, deleting relevant ports.");
+		Port.portDestroy(Port.getPort(e.getTown()));
 	}
 
 	@EventHandler
 	public void onTownUnclaimEvent(TownUnclaimEvent e) {
-		if(ImplodusPorts.getInstance().isTownyEnabled()){
-			Logger.log("[IPorts] Town unclaim event, deleting relevant ports.");
-			Port.portDestroy(Port.getPort(e.getTown()));
-		}
+		Logger.log("[IPorts] Town unclaim event, deleting relevant ports.");
+		Port.portDestroy(Port.getPort(e.getTown()));
 	}
 
 

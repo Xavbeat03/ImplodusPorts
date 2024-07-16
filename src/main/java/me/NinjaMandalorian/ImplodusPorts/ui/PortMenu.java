@@ -96,7 +96,7 @@ public class PortMenu {
 				lore = Arrays.asList(
 					ChatColor.GOLD + "Size: " + portSizeString(port),
 					ChatColor.GOLD + "Travel Time: " + (TravelHandler.getJourneyWait(path) / 20L),
-					ChatColor.GOLD + "Cost: " + ImplodusPorts.econ.format(TravelHandler.getJourneyCost(path)),
+					ChatColor.GOLD + "Cost: " + ImplodusPorts.getInstance().getEconomy().format(TravelHandler.getJourneyCost(path)),
 					ChatColor.GREEN + "Click to Travel"
 				);
 			} else {
