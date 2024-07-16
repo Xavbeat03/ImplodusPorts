@@ -4,6 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import me.NinjaMandalorian.ImplodusPorts.command.ImplodusPortsCommands;
 import me.NinjaMandalorian.ImplodusPorts.data.DataManager;
 import me.NinjaMandalorian.ImplodusPorts.data.PortDataManager;
+import me.NinjaMandalorian.ImplodusPorts.dymap.DynmapHandler;
 import me.NinjaMandalorian.ImplodusPorts.listener.*;
 import me.NinjaMandalorian.ImplodusPorts.object.Port;
 import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
@@ -67,6 +68,10 @@ public class ImplodusPorts extends JavaPlugin {
 		if (townyAPI != null) {
 			pm.registerEvents(new TownListener(), instance);
 		}
+
+		// Dynmap hook
+		DynmapHandler dynmapHandler = new DynmapHandler();
+		dynmapHandler.resetPortMarkers();
 	}
 
 	public void onDisable() {
