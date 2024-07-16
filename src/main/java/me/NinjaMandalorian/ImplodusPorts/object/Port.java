@@ -49,7 +49,7 @@ public class Port {
 		this.size = size;
 		this.displayName = displayName;
 		this.town = null;
-		if(ImplodusPorts.getInstance().isTownyEnabled() &&  ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation) != null) {
+		if(ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation) != null) {
 			try {
 				this.town = ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation).getTown();
 			}

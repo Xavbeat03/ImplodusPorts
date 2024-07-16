@@ -9,107 +9,114 @@ import me.NinjaMandalorian.ImplodusPorts.object.Port;
 import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
+import org.dynmap.DynmapAPI;
+import org.dynmap.markers.MarkerAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-/**
- * Main class for ImplodusPorts plugin
- *
- * @author NinjaMandalorian
- */
 public class ImplodusPorts extends JavaPlugin {
 
-	public static Economy econ;
+	// Plugin Instance
 	private static ImplodusPorts instance;
-	private BukkitAudiences adventure;
-
-	private static TownyAPI townyAPI;
-
 	public static ImplodusPorts getInstance() {
 		return instance;
 	}
 
-	public static Economy getEconomy() {
+	// Interfaces/APIs
+	private Economy econ;
+	private TownyAPI townyAPI;
+	private BukkitAudiences adventure;
+	private DynmapAPI dynmapAPI;
+	private MarkerAPI markerAPI;
+	public Economy getEconomy() {
 		return econ;
 	}
+	public TownyAPI getTownyAPI() { return townyAPI; }
+	public BukkitAudiences getAdventure() { return adventure; }
+
+	// Private class variables
+	private PluginManager pm;
 
 	public void onEnable() {
-		instance = this;
 
+		// Initialize API components and check for required dependencies
+		instance = this;
 		adventure = BukkitAudiences.create(instance);
+		pm = getServer().getPluginManager();
+		setupEconomy();
+		setupTowny();
+		setupDynmap();
 
 		// Initialise parts of the plugin
 		DataManager.init();
 		Settings.init();
 		Port.initPorts();
-		setupEconomy();
-		setupTowny();
 
+		// Register commands
 		new ImplodusPortsCommands();
 
-		PluginManager PluginManager = getServer().getPluginManager();
-		PluginManager.registerEvents(new InventoryListener(), instance);
-		PluginManager.registerEvents(new PlayerListener(), instance);
-		PluginManager.registerEvents(new SignListener(), instance);
-		PluginManager.registerEvents(new BlockListener(), instance);
-		if(isTownyEnabled()) {
-			PluginManager.registerEvents(new TownListener(), instance);
+		// Register listeners
+		pm.registerEvents(new InventoryListener(), instance);
+		pm.registerEvents(new PlayerListener(), instance);
+		pm.registerEvents(new SignListener(), instance);
+		pm.registerEvents(new BlockListener(), instance);
+		if (townyAPI != null) {
+			pm.registerEvents(new TownListener(), instance);
 		}
 	}
 
 	public void onDisable() {
 		Bukkit.getLogger().info("Disabling ImplodusPorts");
 		PortDataManager.savePortData(Port.getPorts());
-		;
 	}
 
-	private boolean setupEconomy() {
-		if (getServer().getPluginManager().getPlugin("Vault") == null) {
-			return false;
+	/**
+	 *  Checks if Vault is installed and sets up Economy
+	 */
+	private void setupEconomy() {
+		if (pm.getPlugin("Vault") == null) {
+			Bukkit.getLogger().severe("Vault was not found. Plugin disabling...");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
 		}
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		if (rsp == null) {
-			return false;
+			Bukkit.getLogger().severe("Economy could not be loaded. Plugin disabling...");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
 		}
 		econ = rsp.getProvider();
-		return econ != null;
 	}
 
 	/**
 	 *  Checks if Towny is installed and sets up TownyAPI
 	 */
-	private static void setupTowny() {
-		if ((ImplodusPorts.getInstance().getServer().getPluginManager().getPlugin("Towny") != null)) {
-			townyAPI = TownyAPI.getInstance();
-			Bukkit.getLogger().info("TownyAPI is enabled");
+	private void setupTowny() {
+		if ((pm.getPlugin("Towny") == null)) {
+			Bukkit.getLogger().severe("Towny was not found. Plugin disabling...");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
 		}
-		else {
-			townyAPI = null;
-			Bukkit.getLogger().info("TownyAPI is disabled");
-		}
+		townyAPI = TownyAPI.getInstance();
 	}
 
 	/**
-	 * Gets the TownyAPI
-	 * @return TownyAPI or null if Towny is not installed
+	 *  Checks if Towny is installed and sets up TownyAPI
 	 */
-	public TownyAPI getTownyAPI() {
-		return townyAPI;
-	}
-
-	/**
-	 * Checks if Towny is installed
-	 * @return true if Towny is installed, false otherwise
-	 */
-	public boolean isTownyEnabled() {
-		return townyAPI != null;
-	}
-
-	public BukkitAudiences getAdventure() {
-		return adventure;
+	private void setupDynmap() {
+		if ((pm.getPlugin("dynmap") == null)) {
+			Bukkit.getLogger().severe("Dynmap was not found. Plugin disabling...");
+			getServer().getPluginManager().disablePlugin(this);
+		return;
+		}
+		dynmapAPI = (DynmapAPI) pm.getPlugin("dynmap");
+		markerAPI = dynmapAPI.getMarkerAPI();
+		if (markerAPI == null) {
+			Bukkit.getLogger().severe("MarkerAPI could not be loaded. Plugin disabling...");
+			getServer().getPluginManager().disablePlugin(this);
+		}
 	}
 
 }

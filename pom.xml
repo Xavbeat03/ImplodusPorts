@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.NinjaMandalorian</groupId>
     <artifactId>ImplodusPorts</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <name>ImplodusPorts</name>
     <url>http://maven.apache.org</url>
@@ -75,6 +75,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>dynmap-repo</id>
+            <url>https://repo.mikeprimm.com/</url>
+        </repository>
     </repositories>
     <dependencies>
         <!--This adds the Spigot API artifact to the build -->
@@ -109,6 +113,12 @@
             <groupId>com.github.LlmDl</groupId>
             <artifactId>Towny</artifactId>
             <version>0.98.6.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>us.dynmap</groupId>
+            <artifactId>dynmap-api</artifactId>
+            <version>2.5</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
