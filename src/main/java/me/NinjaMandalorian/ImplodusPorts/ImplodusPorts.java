@@ -35,6 +35,8 @@ public class ImplodusPorts extends JavaPlugin {
 	}
 	public TownyAPI getTownyAPI() { return townyAPI; }
 	public BukkitAudiences getAdventure() { return adventure; }
+	public DynmapAPI getDynmapAPI() { return dynmapAPI; }
+	public MarkerAPI getMarkerAPI() { return markerAPI; }
 
 	// Private class variables
 	private PluginManager pm;
