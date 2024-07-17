@@ -58,13 +58,19 @@ public class DynmapHandler {
     private void placeAllPortMarkers() {
         for (Port port : Port.getPorts().values()) {
             String portSize = portSizeString(port);
-            String townName = port.getTown().getName();
+            String townName = port.getDisplayName();
             String markerID = townName + "__port";
+            if (port.getSignLocation() == null) {
+                continue;
+            }
+            if (port.getDisplayName() == null) {
+                continue;
+            }
             Marker marker = markerSet.createMarker
                     (
                         markerID,
                         "Port of " + townName,
-                        port.getTown().getWorld().getName(),
+                        port.getSignLocation().getWorld().getName(),
                         port.getSignLocation().getX(),
                         port.getSignLocation().getY(),
                         port.getSignLocation().getZ(),
