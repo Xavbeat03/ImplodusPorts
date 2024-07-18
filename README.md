@@ -18,7 +18,7 @@ A UI based port system for Minecraft.
 
 Admins can create ports by doing the following:
 * Place a sign
-* Label the top line ```[Ports]```
+* Label the top line ```[Port]```
 * Label the second line the port name
 
 Afterwards, the sign should become auto-formatted, and the plugin will inform you that the port was created.
