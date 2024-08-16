@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.NinjaMandalorian</groupId>
     <artifactId>ImplodusPorts</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 
     <name>ImplodusPorts</name>
     <url>http://maven.apache.org</url>
