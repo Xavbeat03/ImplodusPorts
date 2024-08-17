@@ -12,7 +12,8 @@ A UI based port system for Minecraft.
 * ```/iports changesize <1,2,3,4>``` : Changes the size of the port being looked at between 1 and 4
   * Permission Node: ```implodusports.admin.changesize``` 
 * ```/iports reload``` : Reloads the config file
-  * Permission Node: ```implodusports.admin.reload``` 
+  * Permission Node: ```implodusports.admin.reload```
+* ```/iports next``` : Starts the next travel of a multi-part journey 
 
 ## Creating a port
 
@@ -30,9 +31,13 @@ To use a port, do the following:
 * Select the port you wish to travel to
 * Pay the needed funds and travel.
 
+## Other notes
+Ports will delete themselves if they're in a claimed towny townblock and that townblock is either deleted or unclaimed.
+
 ## Dependencies
 
 * Towny 0.98.6.0 and up
 * VaultAPI
+* (Soft) Dynmap
 
 **Note:** these commands can only be run by individuals with the appropriate admin permissions.

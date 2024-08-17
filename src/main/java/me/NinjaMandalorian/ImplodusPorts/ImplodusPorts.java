@@ -38,6 +38,7 @@ public class ImplodusPorts extends JavaPlugin {
 	public BukkitAudiences getAdventure() { return adventure; }
 	public DynmapAPI getDynmapAPI() { return dynmapAPI; }
 	public MarkerAPI getMarkerAPI() { return markerAPI; }
+	public boolean dynmapIsEnabled = false;
 
 	// Private class variables
 	private PluginManager pm;
@@ -69,9 +70,11 @@ public class ImplodusPorts extends JavaPlugin {
 			pm.registerEvents(new TownListener(), instance);
 		}
 
-		// Dynmap hook
-		DynmapHandler dynmapHandler = new DynmapHandler();
-		dynmapHandler.resetPortMarkers();
+		if(dynmapIsEnabled) {
+			// Dynmap hook
+			DynmapHandler dynmapHandler = new DynmapHandler();
+			dynmapHandler.resetPortMarkers();
+		}
 	}
 
 	public void onDisable() {
@@ -114,16 +117,16 @@ public class ImplodusPorts extends JavaPlugin {
 	 */
 	private void setupDynmap() {
 		if ((pm.getPlugin("dynmap") == null)) {
-			Bukkit.getLogger().severe("Dynmap was not found. Plugin disabling...");
-			getServer().getPluginManager().disablePlugin(this);
-		return;
+			Bukkit.getLogger().severe("Dynmap was not found.");
+			return;
 		}
 		dynmapAPI = (DynmapAPI) pm.getPlugin("dynmap");
 		markerAPI = dynmapAPI.getMarkerAPI();
 		if (markerAPI == null) {
-			Bukkit.getLogger().severe("MarkerAPI could not be loaded. Plugin disabling...");
-			getServer().getPluginManager().disablePlugin(this);
+			Bukkit.getLogger().severe("MarkerAPI could not be loaded.");
+			return;
 		}
+		dynmapIsEnabled = true;
 	}
 
 }
