@@ -118,7 +118,7 @@ public class ImplodusPorts extends JavaPlugin {
 	private void setupDynmap() {
 		if ((pm.getPlugin("dynmap") == null)) {
 			Bukkit.getLogger().severe("Dynmap was not found.");
-		return;
+			return;
 		}
 		dynmapAPI = (DynmapAPI) pm.getPlugin("dynmap");
 		markerAPI = dynmapAPI.getMarkerAPI();
