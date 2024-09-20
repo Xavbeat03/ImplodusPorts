@@ -27,6 +27,7 @@ public class Settings {
 	public static double megaWalkRadius = 50.00;
 	public static Level loggerLevel;
 	public static double walkWarningRadiusPercentage = 0.8;
+	public static String DynmapIconName = "anchor";
 	private static ImplodusPorts plugin;
 	private static FileConfiguration config;
 
@@ -54,6 +55,7 @@ public class Settings {
 		megaSpeed = config.getDouble("sizes.mega.speed");
 		megaWalkRadius = config.getDouble("sizes.mega.walk_radius");
 		walkWarningRadiusPercentage = config.getDouble("walk_warning_radius_percentage");
+		DynmapIconName = config.getString("dynmap.icon_name");
 
 		loggerLevel = (config.getString("logger.level") == null) ? Level.INFO : Level.parse(config.getString("logger.level"));
 	}

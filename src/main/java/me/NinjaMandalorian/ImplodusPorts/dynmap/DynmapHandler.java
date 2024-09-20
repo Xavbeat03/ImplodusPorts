@@ -2,7 +2,7 @@ package me.NinjaMandalorian.ImplodusPorts.dynmap;
 
 import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
 import me.NinjaMandalorian.ImplodusPorts.object.Port;
-import org.dynmap.DynmapAPI;
+import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
@@ -12,7 +12,8 @@ import static me.NinjaMandalorian.ImplodusPorts.ui.PortMenu.portSizeString;
 
 public class DynmapHandler {
 
-	private final MarkerAPI markerAPI;
+    public static final String DYNMAP_ICON_NAME = Settings.DynmapIconName;
+    private final MarkerAPI markerAPI;
     private final MarkerIcon markerIcon;
 
     private MarkerSet markerSet;
@@ -20,7 +21,7 @@ public class DynmapHandler {
     public DynmapHandler() {
 		ImplodusPorts plugin = ImplodusPorts.getInstance();
 		markerAPI = plugin.getMarkerAPI();
-        markerIcon = markerAPI.getMarkerIcon("anchor");
+        markerIcon = markerAPI.getMarkerIcon(DYNMAP_ICON_NAME);
     }
 
     public void resetPortMarkers() {

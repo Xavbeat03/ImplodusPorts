@@ -9,7 +9,6 @@ basecost: 5.00
 
 walk_warning_radius_percentage: 0.8
 
-
 sizes:
   small:
     distance: 500.00
@@ -33,3 +32,6 @@ sizes:
     cost: 6.00
     speed: 80.00
     walk_radius: 50.00
+    
+dynmap:
+  icon_name: anchor
