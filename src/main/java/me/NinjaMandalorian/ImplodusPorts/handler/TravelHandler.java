@@ -1,7 +1,6 @@
 package me.NinjaMandalorian.ImplodusPorts.handler;
 
 import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
-import me.NinjaMandalorian.ImplodusPorts.Logger;
 import me.NinjaMandalorian.ImplodusPorts.helper.PortHelper;
 import me.NinjaMandalorian.ImplodusPorts.helper.StringHelper;
 import me.NinjaMandalorian.ImplodusPorts.object.Port;
@@ -141,8 +140,8 @@ public class TravelHandler {
 	 */
 	public static List<Port> findPath(Player player, Port origin, Port destination) {
 		if (origin.getNearby().contains(destination))
-			return (List<Port>) Arrays.asList(origin, destination);
-		return AStarAlgorithm.findShortestPath((Collection<Port>) Port.getPorts().values(), origin, destination);
+			return Arrays.asList(origin, destination);
+		return AStarAlgorithm.findShortestPath(origin, destination);
 	}
 
 	/**

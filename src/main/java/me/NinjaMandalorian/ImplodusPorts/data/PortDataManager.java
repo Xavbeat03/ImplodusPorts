@@ -6,10 +6,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class PortDataManager {
 
-	private static String filePath = "ports.csv";
+	private static final String filePath = "ports.csv";
 	private static String categories = ""
 		+ "id,"
 		+ "signLocation,"
@@ -22,7 +23,7 @@ public class PortDataManager {
 	 *
 	 * @return Map of ports
 	 */
-	public static HashMap<String, Port> loadPortData() {
+	public static Map<String, Port> loadPortData() {
 		HashMap<String, Port> returnData = new HashMap<String, Port>();
 
 		String rawData = DataManager.getRawData(filePath);
@@ -58,17 +59,15 @@ public class PortDataManager {
 	 * @param port - Port to save
 	 */
 	public static void savePort(Port port) {
-		HashMap<String, Port> data = loadPortData();
+		HashMap<String, Port> data = (HashMap<String, Port>) loadPortData();
 		data.put(port.getId(), port);
 
 		savePortData(data);
 	}
 
 	public static void deletePort(Port port) {
-		HashMap<String, Port> data = loadPortData();
+		HashMap<String, Port> data = (HashMap<String, Port>) loadPortData();
 		data.remove(port.getId());
-
-		savePortData(data);
 	}
 
 	/**
@@ -76,16 +75,14 @@ public class PortDataManager {
 	 *
 	 * @param data - Port data
 	 */
-	public static void savePortData(HashMap<String, Port> data) {
-		String rawData = "";
-		rawData += categories + "\n";
-
+	public static void savePortData(Map<String, Port> data) {
+		StringBuilder rawData = new StringBuilder();
+		rawData.append(categories).append("\n");
 		for (Port port : data.values()) {
-			rawData += portToString(port);
-			rawData += "\n";
+			rawData.append(portToString(port));
+			rawData.append("\n");
 		}
-
-		DataManager.saveRawData(filePath, rawData);
+		DataManager.saveRawData(filePath, rawData.toString());
 	}
 
 	/**
@@ -95,8 +92,7 @@ public class PortDataManager {
 	 * @return Port string
 	 */
 	private static String portToString(Port port) {
-		return ""
-			+ port.getId() + ","
+		return port.getId() + ","
 			+ locationToString(port.getSignLocation()) + ","
 			+ locationToString(port.getTeleportLocation()) + ","
 			+ port.getSize() + ","
@@ -110,6 +106,7 @@ public class PortDataManager {
 	 * @param string - Input string
 	 * @return Split array excluding quoted
 	 */
+	
 	private static String[] splitWithQuotes(String string) {
 		String[] split = string.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 		if (string.contains("\"")) {

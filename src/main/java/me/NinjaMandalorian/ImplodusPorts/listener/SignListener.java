@@ -21,10 +21,11 @@ public class SignListener implements Listener {
 	 */
 	@EventHandler
 	public void onSignChange(SignChangeEvent e) {
-		//Logger.debug("SignChangeEvent");
 		Player player = e.getPlayer();
 		Block block = e.getBlock();
 
+		if(e.getLine(0) == null || e.getLine(1) == null) return;
+		
 		if (!e.getLine(0).equalsIgnoreCase("[Port]") || e.getLine(1).strip().equalsIgnoreCase("")) return;
 
 		if (player.hasPermission("implodusports.admin.create")) {
@@ -40,12 +41,9 @@ public class SignListener implements Listener {
 			for (int i = 0; i < 4; i++) {
 				e.setLine(i, formattedSign.get(i));
 			}
-
-			return;
 		} else {
 			player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&9[&6iPorts&9] &cYou do not have permission to create a port."));
 			e.setCancelled(true);
-			return;
 		}
 	}
 

@@ -1,28 +1,26 @@
 package me.NinjaMandalorian.ImplodusPorts.data;
 
-import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
 import me.NinjaMandalorian.ImplodusPorts.Logger;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DataManager {
 
-	@SuppressWarnings("unused")
-	private static ImplodusPorts plugin;
-
-	private static String dataFolder = "plugins" + File.separator + "ImplodusPorts" + File.separator + "data";
+	private static final String DATA_FOLDER = "plugins" + File.separator + "ImplodusPorts" + File.separator + "data";
+	public static final String ATTEMPTED_TO_RETRIEVE_NON_EXISTANT_FILE = "Attempted to retrieve non-existant file: ";
 	private static DumperOptions options;
 
 	public static void init() {
-		plugin = ImplodusPorts.getInstance();
-
 		createFolders();
 	}
 
@@ -32,37 +30,39 @@ public class DataManager {
 	 * @param filePath - File's path after ImplodusPorts/Data/
 	 * @param map      - Map to be saved
 	 */
-	public static void saveYmlData(String filePath, HashMap<String, Object> map) {
+	public static void saveYmlData(String filePath, Map<String, Object> map) {
+
 		File file = getFile(filePath);
-		PrintWriter writer = null;
-		try {
-			writer = new PrintWriter(file);
+		if (file == null) return;
+
+		try (PrintWriter writer = new PrintWriter(file)) {
+			if (options == null) {
+				options = new DumperOptions();
+				options.setIndent(2);
+				options.setPrettyFlow(true);
+				options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+			}
+
+			Yaml yaml = new Yaml(options);
+			yaml.dump(map, writer);
 		} catch (FileNotFoundException e) {
 			Logger.log("Encountered error when creating PrintWriter for " + filePath);
 		}
-
-		if (options == null) {
-			options = new DumperOptions();
-			options.setIndent(2);
-			options.setPrettyFlow(true);
-			options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-		}
-
-		Yaml yaml = new Yaml(options);
-		yaml.dump(map, writer);
-		writer.close();
 	}
 
 	public static void saveRawData(String filePath, String rawData) {
 		File file = getFile(filePath);
+		if (file == null) return;
 		try {
-			PrintWriter out = new PrintWriter(file.getPath(), "UTF-8");
+			PrintWriter out = new PrintWriter(file.getPath(), StandardCharsets.UTF_8);
 			out.write(rawData);
 			out.close();
 		} catch (UnsupportedEncodingException e) {
 			Logger.log("Error: unsupported encoding");
 		} catch (FileNotFoundException e) {
 			Logger.log("Error: file not found");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -72,12 +72,16 @@ public class DataManager {
 	 * @param filePath - FilePath of data
 	 * @return HashMap of data or null
 	 */
-	public static HashMap<String, Object> getYmlData(String filePath) {
+	public static Map<String, Object> getYmlData(String filePath) {
 
 		File file = getFile(filePath);
+		if(file == null) {
+			Logger.log(ATTEMPTED_TO_RETRIEVE_NON_EXISTANT_FILE + filePath);
+			return Collections.emptyMap();
+		}
 		if (!file.exists()) {
-			Logger.log("Attempted to retrieve non-existant file: " + filePath);
-			return null;
+			Logger.log(ATTEMPTED_TO_RETRIEVE_NON_EXISTANT_FILE + filePath);
+			return Collections.emptyMap();
 		}
 
 		InputStream inputStream = null;
@@ -85,7 +89,7 @@ public class DataManager {
 			inputStream = new FileInputStream(file);
 		} catch (FileNotFoundException e) {
 			Logger.warn("[ImplodusPorts] Encountered error when creating FileInputStream for " + filePath);
-			return null;
+			return Collections.emptyMap();
 		}
 		Yaml yaml = new Yaml();
 		HashMap<String, Object> data = yaml.load(inputStream);
@@ -99,12 +103,15 @@ public class DataManager {
 	}
 
 	/**
-	 * Retrieves raw data of file (UTF-8)
-	 *
-	 * @param path - File path of raw data
-	 * @return String of file path
+	 * Gets the raw data from a file
+	 * @param pathString - Path to file
+	 * @return String of data
 	 */
 	public static String getRawData(String pathString) {
+		if(getFile(pathString) == null) {
+			Logger.log(ATTEMPTED_TO_RETRIEVE_NON_EXISTANT_FILE + pathString);
+			return "";
+		}
 		Path path = getFile(pathString).toPath();
 
 		try {
@@ -123,17 +130,19 @@ public class DataManager {
 	 */
 	public static boolean deleteFile(String filePath) {
 		File file = getFile(filePath);
-
+		if(file == null) {
+			Logger.log(ATTEMPTED_TO_RETRIEVE_NON_EXISTANT_FILE + filePath + ".yml");
+			return false;
+		}
 		if (!file.exists()) {
-			Logger.log("Attempted to retrieve non-existant file: " + filePath + ".yml");
+			Logger.log(ATTEMPTED_TO_RETRIEVE_NON_EXISTANT_FILE + filePath + ".yml");
 			return false;
 		}
 
 		try {
 			return Files.deleteIfExists(file.toPath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.log("Error: " + e.getMessage());
 			return false;
 		}
 	}
@@ -142,12 +151,13 @@ public class DataManager {
 	 * Initial creation of all needed folders
 	 */
 	private static void createFolders() {
-		List<String> paths = Arrays.asList(
+		List<String> paths = List.of(
 			"plugins" + File.separator + "ImplodusPorts" + File.separator + "data"
 		);
 
 		for (String path : paths) {
 			File file = new File(path);
+			
 			if (!file.exists()) {
 				file.mkdirs();
 			}
@@ -161,7 +171,7 @@ public class DataManager {
 	 * @return File
 	 */
 	private static File getFile(String path) {
-		path = dataFolder + File.separator + path;
+		path = DATA_FOLDER + File.separator + path;
 
 		File file = new File(path);
 		if (!file.exists()) {

@@ -1,4 +1,4 @@
-package me.NinjaMandalorian.ImplodusPorts.dymap;
+package me.NinjaMandalorian.ImplodusPorts.dynmap;
 
 import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
 import me.NinjaMandalorian.ImplodusPorts.object.Port;
@@ -12,17 +12,14 @@ import static me.NinjaMandalorian.ImplodusPorts.ui.PortMenu.portSizeString;
 
 public class DynmapHandler {
 
-    private ImplodusPorts plugin;
-    private DynmapAPI dynmapAPI;
-    private MarkerAPI markerAPI;
-    private MarkerIcon markerIcon;
+	private final MarkerAPI markerAPI;
+    private final MarkerIcon markerIcon;
 
     private MarkerSet markerSet;
 
     public DynmapHandler() {
-        plugin = ImplodusPorts.getInstance();
-        dynmapAPI = plugin.getDynmapAPI();
-        markerAPI = plugin.getMarkerAPI();
+		ImplodusPorts plugin = ImplodusPorts.getInstance();
+		markerAPI = plugin.getMarkerAPI();
         markerIcon = markerAPI.getMarkerIcon("anchor");
     }
 
@@ -72,8 +69,8 @@ public class DynmapHandler {
                         false
                     );
             String infobox = "<div class=\\\"regioninfo\\\"><div class=\"\\infowindow\\\"><span style=\"0font-size: 120%;\">Port of @townname</span><br />Type: <span style=\"0font-weight: bold;\">@portsize</span></div></div>";
-            infobox = infobox.replaceAll("@townname", townName);
-            infobox = infobox.replaceAll("@portsize", portSize.substring(2)); // Remove color code (Ex: §bJetty -> Jetty)
+            infobox = infobox.replace("@townname", townName);
+            infobox = infobox.replace("@portsize", portSize.substring(2)); // Remove color code (Ex: §bJetty -> Jetty)
             marker.setDescription(infobox);
         }
     }

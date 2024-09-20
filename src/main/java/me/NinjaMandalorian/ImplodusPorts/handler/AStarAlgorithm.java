@@ -6,25 +6,19 @@ import org.bukkit.Location;
 import java.util.*;
 
 public class AStarAlgorithm {
+	
+	private AStarAlgorithm(){}
 
-	public static ArrayList<Port> findShortestPath(Collection<Port> ports, Port start, Port goal) {
-		Set<Port> visited = new HashSet<Port>();
-		Map<Port, Double> gScores = new HashMap<Port, Double>();
-		Map<Port, Double> fScores = new HashMap<Port, Double>();
-		Map<Port, Port> cameFrom = new HashMap<Port, Port>();
+	public static List<Port> findShortestPath(Port start, Port goal) {
+		Set<Port> visited = new HashSet<>();
+		Map<Port, Double> gScores = new HashMap<>();
+		Map<Port, Double> fScores = new HashMap<>();
+		Map<Port, Port> cameFrom = new HashMap<>();
 
-		//PriorityQueue<Port> openSet = new PriorityQueue<Port>(Comparator.comparingDouble(fScores::get));
-		PriorityQueue<Port> openSet = new PriorityQueue<Port>(1, new Comparator<Port>() {
-
-			@Override
-			/**
-			 * Compare
-			 */
-			public int compare(Port o1, Port o2) {
-				return Double.compare(fScores.get(o1), fScores.get(o2));
-			}
-
-		});
+		// Compare
+		
+		PriorityQueue<Port> openSet = new PriorityQueue<>(1,
+			Comparator.comparingDouble(fScores::get));
 		openSet.add(start);
 
 		gScores.put(start, 0.0);
@@ -40,11 +34,7 @@ public class AStarAlgorithm {
 			visited.add(current);
 
 			for (Port neighbor : current.getNearby()) {
-				if (neighbor == null) continue;
-
-				if (visited.contains(neighbor)) {
-					continue;
-				}
+				if (neighbor == null || visited.contains(neighbor)) continue;
 
 				double tentativeGScore = gScores.get(current) + distance(current.getSignLocation(), neighbor.getSignLocation());
 				double tentativeFScore = tentativeGScore + heuristicCost(neighbor, goal);
@@ -62,7 +52,7 @@ public class AStarAlgorithm {
 			}
 		}
 
-		return null;
+		return Collections.emptyList();
 	}
 
 	/**
@@ -74,7 +64,7 @@ public class AStarAlgorithm {
 	 * @return List of ports from start to finish.
 	 */
 	private static ArrayList<Port> reconstructPath(Map<Port, Port> cameFrom, Port current) {
-		ArrayList<Port> path = new ArrayList<Port>();
+		ArrayList<Port> path = new ArrayList<>();
 		path.add(current);
 
 		while (cameFrom.containsKey(current)) {

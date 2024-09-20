@@ -13,11 +13,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +43,7 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 	}
 
 	private static void travelCommand(Player player, String[] args) {
-		//Bukkit.getLogger().info("Travel recieved with destinations: " + args.toString());
+		Logger.log("Travel recieved with destinations: " + Arrays.toString(args));
 
 		@SuppressWarnings("unused")
 		String[] extraParams = Arrays.copyOfRange(args, 2, args.length - 1);
@@ -49,7 +52,6 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 		if (origin != null && destination != null) {
 			TravelHandler.startJourney(player, origin, destination, args);
 		}
-		return;
 	}
 
 	private static void changeSizeCommand(Player player, String[] args) {
@@ -60,19 +62,18 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 			return;
 		}
 		Block targetBlock = player.getTargetBlock(null, 5);
-		if (targetBlock == null) return;
 		Port port = Port.getPort(targetBlock);
 		if (port == null) return;
 		port.changeSize(newSize);
 
 		Sign sign = (Sign) targetBlock.getState();
 		List<String> signList = PortHelper.formatSign(port);
+		SignSide frontSide = sign.getSide(Side.FRONT);
 		for (int i = 0; i < 4; i++) {
-			sign.setLine(i, signList.get(i));
+			frontSide.setLine(i, signList.get(i));
 		}
 		sign.update(true);
 
-		return;
 	}
 
 	private void deletePortCommand(Player player, String[] strings) {
@@ -94,7 +95,7 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 
 		if(sender instanceof Player) {
 			if(args.length == 0) {
@@ -127,7 +128,7 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
 		if (sender instanceof Player player) {
 			if (args.length == 0) {
 				return false;
@@ -135,7 +136,7 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 
 			switch (args[0].toLowerCase()) {
 				case "travel":
-					travelCommand(player, StringHelper.remFirst(args));
+					travelCommand(player, StringHelper.removeFirstElement(args));
 					return true;
 				case "next":
 					player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
@@ -143,13 +144,13 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 					return true;
 				case "changesize":
 					if (player.hasPermission("implodusports.admin.changesize")) {
-						changeSizeCommand(player, StringHelper.remFirst(args));
+						changeSizeCommand(player, StringHelper.removeFirstElement(args));
 					}
 					return true;
 				case "destroy":
 					if (player.hasPermission("implodusports.admin.destroy")){
 						System.out.println("Made it here!");
-						deletePortCommand(player, StringHelper.remFirst(args));
+						deletePortCommand(player, StringHelper.removeFirstElement(args));
 					}
 					return true;
 				case "reload":

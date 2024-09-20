@@ -1,7 +1,14 @@
 # Plugin version, do not edit.
-version: 1.1.0
+version: 1.4.0
+
+logger:
+  # Log level
+  level: INFO
 
 basecost: 5.00
+
+walk_warning_radius_percentage: 0.8
+
 
 sizes:
   small:

@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -27,8 +28,7 @@ public class PortHelper {
 	 * @return Sorted Port List.
 	 */
 	public static List<Port> orderPorts(Port currentPort, List<Port> toSort) {
-		List<Port> returnList = new ArrayList<Port>();
-		TreeMap<Double, Port> sortedMap = new TreeMap<Double, Port>();
+		TreeMap<Double, Port> sortedMap = new TreeMap<>();
 
 		// Removes self
 		toSort.remove(currentPort);
@@ -37,20 +37,20 @@ public class PortHelper {
 		for (Port port : toSort) {
 			if (port.getSize() == 4) {
 				Double distance = currentPort.distanceTo(port);
-				while (sortedMap.containsKey(distance)) distance += 0.01;
+				while(sortedMap.computeIfAbsent(distance, k -> port) != port) distance += 0.01;
 				sortedMap.put(distance, port);
 			}
 		}
 
 		// Adds all megaports to final list & clears sortedMap
-		returnList.addAll(sortedMap.values());
+		List<Port> returnList = new ArrayList<>(sortedMap.values());
 		sortedMap.clear();
 
 		// Re-uses sortedMap for rest of ports
 		for (Port port : toSort) {
 			if (port.getSize() != 4) {
 				Double distance = currentPort.distanceTo(port);
-				while (sortedMap.containsKey(distance)) distance += 0.01;
+				while(sortedMap.computeIfAbsent(distance, k -> port) != port) distance += 0.01;
 				sortedMap.put(distance, port);
 			}
 		}
@@ -68,8 +68,7 @@ public class PortHelper {
 			Location signLocation = block.getLocation();
 			Location teleportLocation = squareLocation(player.getLocation());
 
-			Port port = new Port(id, signLocation, teleportLocation, 1, displayName);
-			return port;
+			return new Port(id, signLocation, teleportLocation, 1, displayName);
 		}
 		catch (NotRegisteredException e){
 			Logger.debug("Port creation failed.");
@@ -78,9 +77,9 @@ public class PortHelper {
 	}
 
 	public static List<String> formatSign(Port port) {
-		//Logger.debug("FORMAT SIGN FOR : " + port.getDisplayName());
+		Logger.debug("FORMAT SIGN FOR : " + port.getDisplayName());
 
-		ArrayList<String> returnList = new ArrayList<String>();
+		ArrayList<String> returnList = new ArrayList<>();
 
 		returnList.add(0, ChatColor.translateAlternateColorCodes('&', "&5&l[Port]"));
 		returnList.add(1, ChatColor.GOLD + port.getDisplayName());
@@ -95,7 +94,7 @@ public class PortHelper {
 			midway(location.getX()),
 			midway(location.getY()),
 			midway(location.getZ()),
-			Math.round(location.getYaw() / 45) * 45,
+			Math.round(location.getYaw() / 45) * (float) 45,
 			0);
 	}
 
@@ -103,11 +102,13 @@ public class PortHelper {
 		return Math.floor(number) + 0.5;
 	}
 
-	public static ArrayList<Port> getAvailablePorts(Player player, World world) {
+	public static List<Port> getAvailablePorts(Player player, World world) {
 		ArrayList<Port> portList = (ArrayList<Port>) Port.getPorts().values();
 
 		for (Port port : portList) {
-			if (!port.getTeleportLocation().getWorld().equals(world)) {
+			if (port.getTeleportLocation() == null 
+				|| port.getTeleportLocation().getWorld() == null 
+				|| !port.getTeleportLocation().getWorld().equals(world)) {
 				portList.remove(port);
 				continue;
 			}
@@ -121,13 +122,15 @@ public class PortHelper {
 		return portList;
 	}
 
+	/** 
+	 * Removes the first element of a list.
+	 *
+	 * @param inList - List to remove from
+	 * @return List without first element
+	 */
 	public static List<Port> delFront(List<Port> inList) {
-		Port[] inArray = inList.toArray(new Port[inList.size()]);
-		ArrayList<Port> returnList = new ArrayList<Port>();
-		for (int i = 1; i < inArray.length; i++) {
-			returnList.add(inArray[i]);
-		}
+		Port[] inArray = inList.toArray(new Port[0]);
 
-		return returnList;
+		return new ArrayList<>(Arrays.asList(inArray).subList(1, inArray.length));
 	}
 }

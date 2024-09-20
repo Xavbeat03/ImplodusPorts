@@ -3,6 +3,8 @@ package me.NinjaMandalorian.ImplodusPorts.settings;
 import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.logging.Level;
+
 public class Settings {
 
 	// Default config values. These are set to prevent potential null errors for
@@ -23,6 +25,8 @@ public class Settings {
 	public static double megaCost = 15.00;
 	public static double megaSpeed = 40.00;
 	public static double megaWalkRadius = 50.00;
+	public static Level loggerLevel;
+	public static double walkWarningRadiusPercentage = 0.8;
 	private static ImplodusPorts plugin;
 	private static FileConfiguration config;
 
@@ -49,34 +53,15 @@ public class Settings {
 		megaCost = config.getDouble("sizes.mega.cost");
 		megaSpeed = config.getDouble("sizes.mega.speed");
 		megaWalkRadius = config.getDouble("sizes.mega.walk_radius");
+		walkWarningRadiusPercentage = config.getDouble("walk_warning_radius_percentage");
+
+		loggerLevel = (config.getString("logger.level") == null) ? Level.INFO : Level.parse(config.getString("logger.level"));
 	}
 
 	public static Double getBaseCost() {
 		return config.getDouble("basecost");
 	}
-
-	//public static Map<String, Object> getSizeMap(int size) {
-	//switch (size) {
-	//case 1:
-	//	return small;
-	//case 2:
-	//	return medium;
-	//case 3:
-	//	return large;
-	//case 4:
-	//	return mega;
-	//}
-	//return null;
-	//}
-
-	//public static Double getSizeDistance(int size) {
-	//return (Double) getSizeMap(size).get("distance");
-	//}
-
-	//public static Double getWalkRadius(int size) {
-	//return (Double) getSizeMap(size).get("walk_radius");
-	//}
-
+	
 	/**
 	 * Reloads the config with the internal config.yml
 	 */

@@ -35,10 +35,18 @@ public class TownListener implements Listener{
 		Logger.log("[IPorts] Town unclaim event, deleting relevant ports.");
 
 		Location signLoc = Port.getPort(e.getTown()).getSignLocation();
+		if ( signLoc == null) {
+			Logger.log("[IPorts] No port found for " + e.getTown());
+			return;
+		}
+		if (signLoc.getWorld() == null) {
+			Logger.log("[IPorts] World not found for " + e.getTown());
+			return;
+		}
 		WorldCoord signWorldCoord = new WorldCoord(signLoc.getWorld().getName(), signLoc.getBlockX(), signLoc.getBlockZ());
 		WorldCoord eventWorldCoord = e.getWorldCoord();
-		//Logger.debug((signWorldCoord.getX()) + " " + (signWorldCoord.getZ()));
-		//Logger.debug((eventWorldCoord.getX()) + " " + (eventWorldCoord.getZ()));
+		Logger.debug((signWorldCoord.getX()) + " " + (signWorldCoord.getZ()));
+		Logger.debug((eventWorldCoord.getX()) + " " + (eventWorldCoord.getZ()));
 		if(Math.floor((double) signWorldCoord.getX() /16) == eventWorldCoord.getX() && Math.floor((double)signWorldCoord.getZ()/16) == eventWorldCoord.getZ())
 		{
 			Logger.log("[IPorts] Found Bad port.");

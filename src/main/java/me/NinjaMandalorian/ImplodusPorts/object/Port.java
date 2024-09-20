@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Port object, handles all interactions with individual ports.
@@ -25,13 +26,13 @@ import java.util.List;
  */
 public class Port {
 
-	private static HashMap<String, Port> activePorts = new HashMap<String, Port>();
+	private static Map<String, Port> activePorts = new HashMap<>();
 
-	private String id;
-	private Location signLocation;
-	private Location teleportLocation;
+	private final String id;
+	private final Location signLocation;
+	private final Location teleportLocation;
 	private int size;
-	private String displayName;
+	private final String displayName;
 
 	private Town town;
 
@@ -39,26 +40,25 @@ public class Port {
 	/**
 	 * Constructor for individual ports.
 	 *
-	 * @param size
-	 * @param displayName
+	 * @param size - Size of the port
+	 * @param displayName - Display name of the port
 	 */
-	public Port(String id, Location sLocation, Location tLocation, int size, String displayName) throws NotRegisteredException {
+	public Port(String id, Location signLocation, Location tLocation, int size, String displayName) throws NotRegisteredException {
 		this.id = id;
-		this.signLocation = sLocation;
+		this.signLocation = signLocation;
 		this.teleportLocation = tLocation;
 		this.size = size;
 		this.displayName = displayName;
-		this.town = null;
-		if(ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation) != null) {
-			try {
-				this.town = ImplodusPorts.getInstance().getTownyAPI().getTownBlock(sLocation).getTown();
-			}
-			catch(NullPointerException e) {
-				this.town = null;
-			}
+		if(ImplodusPorts.getInstance().getTownyAPI().getTownBlock(signLocation) != null) {
+			this.town = ImplodusPorts.getInstance().getTownyAPI().getTownBlock(signLocation).getTown();
 		}
-	}
+		else {
+			Logger.log("Town not found for port " + id);
+		}
+		
 
+	}
+	
 	public Port(String id, Location sLocation, Location tLocation, int size) throws NotRegisteredException {
 		this(id, sLocation, tLocation, size, id);
 	}
@@ -88,9 +88,9 @@ public class Port {
 	/**
 	 * Get all Ports
 	 *
-	 * @return List of a Ports
+	 * @return Map of a Ports
 	 */
-	public static HashMap<String, Port> getPorts() {
+	public static Map<String, Port> getPorts() {
 		return activePorts;
 	}
 
@@ -108,12 +108,10 @@ public class Port {
 	 * @return Port or null
 	 */
 	public static Port getPort(Block block) {
-		for (Port port : activePorts.values()) {
-			if (port.getSignLocation().getBlock().equals(block)) {
-				return port;
-			}
-		}
-		return null;
+		return activePorts.values().stream()
+			.filter(port -> port.getSignLocation().getBlock().equals(block))
+			.findFirst()
+			.orElse(null);
 	}
 
 	/**
@@ -122,12 +120,10 @@ public class Port {
 	 * @return Port or null
 	 */
 	public static Port getPort(Town town) {
-		for (Port port : activePorts.values()) {
-			if (port.getTown() != null && port.getTown().equals(town)) {
-				return port;
-			}
-		}
-		return null;
+		return activePorts.values().stream()
+			.filter(port -> port.getTown() != null && port.getTown().equals(town))
+			.findFirst()
+			.orElse(null);
 	}
 
 	public static void initPorts() {
@@ -136,14 +132,14 @@ public class Port {
 
 	public static void portCreate(Player player, Port port) {
 		player.sendMessage("%s[IPorts]%s CREATED PORT".formatted(ChatColor.RED, ChatColor.WHITE));
-		Logger.log(("Player " + player != null ? player.getName() : "CONSOLE") + " created port " + port.getId());
+		Logger.log(player.getName() + " created port " + port.getId());
 		activePorts.put(port.getId(), port);
 		PortDataManager.savePort(port);
 	}
 
 	public static void portDestroy(Player player, Port port) {
 		player.sendMessage("%s[IPorts]%s DESTROYED PORT".formatted(ChatColor.RED, ChatColor.WHITE));
-		Logger.log("Player " + player != null ? player.getName() : "CONSOLE" + " destroyed port " + port.getId());
+		Logger.log(player.getName());
 		portDestroy(port);
 	}
 
@@ -156,9 +152,8 @@ public class Port {
 		Logger.log("[IPorts] Destroyed port " + port.getId());
 		activePorts.remove(port.getId());
 		if(port.getSignLocation().getBlock().getType() != Material.AIR) {
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ImplodusPorts.getInstance(), () -> {
-				port.getSignLocation().getBlock().setType(Material.AIR, false);
-			});
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(ImplodusPorts.getInstance(), 
+				() -> port.getSignLocation().getBlock().setType(Material.AIR, false));
 
 		}
 		PortDataManager.deletePort(port);
@@ -189,48 +184,26 @@ public class Port {
 	}
 
 	public List<Port> getNearby() {
-		ArrayList<Port> returnList = new ArrayList<Port>();
-		//Logger.debug("GETTING NEARBY FOR " + this.id);
+		ArrayList<Port> returnList = new ArrayList<>();
+		Logger.debug("GETTING NEARBY FOR " + this.id);
 		for (Port port : activePorts.values()) {
-			if (port.equals(this)) {
-				if (port.getTeleportLocation().getWorld() != this.signLocation.getWorld()) {
-					continue;
-				}
-			}
 			Double distance = this.distanceTo(port);
-			Double port1Range = 0.0;
-			switch (size) {
-				case 1:
-					port1Range = Settings.smallDistance;
-					break;
-				case 2:
-					port1Range = Settings.mediumDistance;
-					break;
-				case 3:
-					port1Range = Settings.largeDistance;
-					break;
-				case 4:
-					port1Range = Settings.megaDistance;
-					break;
-			}
-			Double port2Range = 0.0;
-			switch (port.getSize()) {
-				case 1:
-					port2Range = Settings.smallDistance;
-					break;
-				case 2:
-					port2Range = Settings.mediumDistance;
-					break;
-				case 3:
-					port2Range = Settings.largeDistance;
-					break;
-				case 4:
-					port2Range = Settings.megaDistance;
-					break;
-			}
-			if (distance > port1Range && distance > port2Range) {
+			Double port1Range = switch (size) {
+				case 1 -> Settings.smallDistance;
+				case 2 -> Settings.mediumDistance;
+				case 3 -> Settings.largeDistance;
+				case 4 -> Settings.megaDistance;
+				default -> 0.0;
+			};
+			Double port2Range = switch (port.getSize()) {
+				case 1 -> Settings.smallDistance;
+				case 2 -> Settings.mediumDistance;
+				case 3 -> Settings.largeDistance;
+				case 4 -> Settings.megaDistance;
+				default -> 0.0;
+			};
+			if ((port.equals(this) && port.getTeleportLocation().getWorld() != this.signLocation.getWorld()) || (distance > port1Range && distance > port2Range)) {
 				continue;
-
 			}
 			returnList.add(port);
 		}
@@ -248,12 +221,25 @@ public class Port {
 		return returnList;
 	}
 
+	/**
+	 * Gets the distance between two ports
+	 * @param port - Port to get distance to
+	 * @return Distance 
+	 */
 	public Double distanceTo(Port port) {
-		if (!this.signLocation.getWorld().equals(port.getSignLocation().getWorld()))
+		// If the worlds are different, return 0
+		if (this.signLocation.getWorld() == null 
+			|| port.getSignLocation().getWorld() == null 
+			|| !this.signLocation.getWorld().equals(port.getSignLocation().getWorld()))
 			return 0.0;
+
 		return (this.getSignLocation().distance(port.getSignLocation()));
 	}
 
+	/**
+	 * Changes the size of the port
+	 * @param newSize - New size, 1-4
+	 */
 	public void changeSize(int newSize) {
 		this.size = Math.min(4, Math.max(1, newSize));
 		PortDataManager.savePort(this);

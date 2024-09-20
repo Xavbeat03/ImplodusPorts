@@ -4,7 +4,7 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import me.NinjaMandalorian.ImplodusPorts.command.ImplodusPortsCommands;
 import me.NinjaMandalorian.ImplodusPorts.data.DataManager;
 import me.NinjaMandalorian.ImplodusPorts.data.PortDataManager;
-import me.NinjaMandalorian.ImplodusPorts.dymap.DynmapHandler;
+import me.NinjaMandalorian.ImplodusPorts.dynmap.DynmapHandler;
 import me.NinjaMandalorian.ImplodusPorts.listener.*;
 import me.NinjaMandalorian.ImplodusPorts.object.Port;
 import me.NinjaMandalorian.ImplodusPorts.settings.Settings;
@@ -38,11 +38,12 @@ public class ImplodusPorts extends JavaPlugin {
 	public BukkitAudiences getAdventure() { return adventure; }
 	public DynmapAPI getDynmapAPI() { return dynmapAPI; }
 	public MarkerAPI getMarkerAPI() { return markerAPI; }
-	public boolean dynmapIsEnabled = false;
+	public static boolean dynmapIsEnabled = false;
 
 	// Private class variables
 	private PluginManager pm;
 
+	@Override
 	public void onEnable() {
 
 		// Initialize API components and check for required dependencies
@@ -77,6 +78,7 @@ public class ImplodusPorts extends JavaPlugin {
 		}
 	}
 
+	@Override
 	public void onDisable() {
 		Bukkit.getLogger().info("Disabling ImplodusPorts");
 		PortDataManager.savePortData(Port.getPorts());
@@ -121,6 +123,10 @@ public class ImplodusPorts extends JavaPlugin {
 			return;
 		}
 		dynmapAPI = (DynmapAPI) pm.getPlugin("dynmap");
+		if(dynmapAPI == null) {
+			Bukkit.getLogger().severe("DynmapAPI could not be loaded.");
+			return;
+		}
 		markerAPI = dynmapAPI.getMarkerAPI();
 		if (markerAPI == null) {
 			Bukkit.getLogger().severe("MarkerAPI could not be loaded.");

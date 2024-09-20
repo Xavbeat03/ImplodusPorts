@@ -62,7 +62,7 @@ public class PortMenu {
 			.openMsg("&9[&6iPorts&9]&r &aOpening &cGlobal Port Menu&a...");
 
 		ArrayList<BaseButton> buttonList = new ArrayList<BaseButton>();
-		for (Port availablePort : PortHelper.orderPorts(port, new ArrayList<Port>(Port.getPorts().values()))) {
+		for (Port availablePort : PortHelper.orderPorts(port, new ArrayList<>(Port.getPorts().values()))) {
 			buttonList.add(portToButton(player, port, availablePort));
 		}
 		builder = builder.setContents(buttonList);
@@ -78,7 +78,7 @@ public class PortMenu {
 			portButton = portButton.itemStack(new ItemStack(Port.getIcon(port.getSize())));
 			portButton = portButton.glow().name(port.getDisplayName());
 
-			List<String> lore = Arrays.asList(
+			List<String> lore = List.of(
 				ChatColor.GOLD + "Size: " + portSizeString(port)
 			);
 
@@ -121,17 +121,13 @@ public class PortMenu {
 	 * @return Port size string
 	 */
 	public static String portSizeString(Port port) {
-		switch (port.getSize()) {
-			case 1:
-				return ChatColor.AQUA + "Jetty";
-			case 2:
-				return ChatColor.DARK_AQUA + "Dock";
-			case 3:
-				return ChatColor.YELLOW + "Harbour";
-			case 4:
-				return ChatColor.DARK_GREEN + "Megaport";
-		}
-		return "";
+		return switch (port.getSize()) {
+			case 1 -> ChatColor.AQUA + "Jetty";
+			case 2 -> ChatColor.DARK_AQUA + "Dock";
+			case 3 -> ChatColor.YELLOW + "Harbour";
+			case 4 -> ChatColor.DARK_GREEN + "Megaport";
+			default -> "";
+		};
 	}
 
 }

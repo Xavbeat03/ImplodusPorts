@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 
 public class PlayerListener implements Listener {
 
-	ArrayList<Player> warnedPlayers = new ArrayList<Player>();
+	ArrayList<Player> warnedPlayers = new ArrayList<>();
 
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent e) {
@@ -31,7 +33,9 @@ public class PlayerListener implements Listener {
 
 		if (block.getType().toString().contains("SIGN")) {
 			Sign sign = (Sign) block.getState();
-			if (!ChatColor.stripColor(sign.getLine(0)).equals("[Port]")) return;
+			SignSide front = sign.getSide(Side.FRONT);
+			SignSide back = sign.getSide(Side.BACK);
+			if (!ChatColor.stripColor(front.getLine(0)).equals("[Port]") || !ChatColor.stripColor(back.getLine(0)).equals("[Port]")) return;
 			Port port = Port.getPort(block.getLocation());
 			if (port == null) return;
 
@@ -39,14 +43,12 @@ public class PlayerListener implements Listener {
 			if (action.equals(Action.RIGHT_CLICK_BLOCK)) {
 				e.setCancelled(true);
 				PortMenu.createPortMenu(player, port).open(player);
-				return;
-			} else if (action.equals(Action.LEFT_CLICK_BLOCK)) {
-				if (!player.hasPermission("implodusports.admin.destroy")) {
+			} else if (action.equals(Action.LEFT_CLICK_BLOCK) 
+				&& !player.hasPermission("implodusports.admin.destroy")) {
 					// Preserve sign text
 					e.setCancelled(true);
 				}
-				return;
-			}
+
 		}
 	}
 
@@ -54,25 +56,17 @@ public class PlayerListener implements Listener {
 	public void onPlayerMove(PlayerMoveEvent e) {
 		Player player = e.getPlayer();
 		Port port = TravelHandler.getCurrentPort(player);
-		if (port == null) return;
-		Double distance = port.getSignLocation().distance(e.getTo());
-		Double maxDistance = 0.0;
-		switch (port.getSize()) {
-			case 1:
-				maxDistance = Settings.smallWalkRadius;
-				break;
-			case 2:
-				maxDistance = Settings.mediumWalkRadius;
-				break;
-			case 3:
-				maxDistance = Settings.largeWalkRadius;
-				break;
-			case 4:
-				maxDistance = Settings.megaWalkRadius;
-				break;
-		}
+		if (port == null || e.getTo() == null) return;
+		double distance = port.getSignLocation().distance(e.getTo());
+		double maxDistance = switch (port.getSize()) {
+			case 1 -> Settings.smallWalkRadius;
+			case 2 -> Settings.mediumWalkRadius;
+			case 3 -> Settings.largeWalkRadius;
+			case 4 -> Settings.megaWalkRadius;
+			default -> 0.0;
+		};
 
-		if (distance < maxDistance * .8) return;
+		if (distance < maxDistance * Settings.walkWarningRadiusPercentage) return;
 
 		if (distance > maxDistance) {
 			TravelHandler.cancelJourney(player);
@@ -80,9 +74,8 @@ public class PlayerListener implements Listener {
 			if (!warnedPlayers.contains(player)) {
 				player.sendMessage(ChatColor.RED + "You are nearing the edge of the port. Leaving will cancel your journey.");
 				warnedPlayers.add(player);
-				Bukkit.getScheduler().scheduleSyncDelayedTask(ImplodusPorts.getInstance(), () -> {
-					warnedPlayers.remove(player);
-				}, 100L);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(ImplodusPorts.getInstance(), 
+					() -> warnedPlayers.remove(player), 100L);
 			}
 		}
 	}
@@ -93,8 +86,7 @@ public class PlayerListener implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerDamaged(EntityDamageEvent e) {
-		if (!(e.getEntity() instanceof Player)) return;
-		Player player = (Player) e.getEntity();
+		if (!(e.getEntity() instanceof Player player)) return;
 		Port port = TravelHandler.getCurrentPort(player);
 		if (port == null) return;
 		TravelHandler.cancelJourney(player);

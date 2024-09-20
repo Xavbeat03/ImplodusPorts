@@ -16,7 +16,7 @@ public class MessageHandler {
 	/**
 	 * Sends message to the player to for going to next port.
 	 *
-	 * @param player
+	 * @param player - Player to send message to
 	 */
 	public static void sendJourneyNext(Player player) {
 		BukkitAudiences adventure = ImplodusPorts.getInstance().getAdventure();
