@@ -20,8 +20,8 @@ import java.util.Map.Entry;
 public class BaseMenu implements InventoryHolder {
 
 	// Menu fields
-	private Inventory inventory;
-	private HashMap<Integer, BaseButton> menuButtons;
+	private final Inventory inventory;
+	private final HashMap<Integer, BaseButton> menuButtons;
 	private String openMessage = null;
 
 	// Paged menu fields
@@ -122,7 +122,7 @@ public class BaseMenu implements InventoryHolder {
 		return this.menuButtons.get(slotNum);
 	}
 
-	public void changePage(Player player, int direction) {
+	public void changePage(int direction) {
 		if (pages == null) return;
 		currentPage += direction;
 		currentPage = Math.max(currentPage, 0);
@@ -132,7 +132,7 @@ public class BaseMenu implements InventoryHolder {
 	}
 
 	private void loadPage(int pageNum) {
-		//Logger.debug("LOADING PAGE " + pageNum);
+		Logger.debug("LOADING PAGE " + pageNum);
 		List<Integer> slotList = Arrays.asList(
 			10, 11, 12, 13, 14, 15, 16,
 			19, 20, 21, 22, 23, 24, 25,
@@ -157,7 +157,7 @@ public class BaseMenu implements InventoryHolder {
 	public static class Builder {
 		private String menuTitle = "ip-title";
 		private int menuSize = 54;
-		private HashMap<Integer, BaseButton> menuButtons = new HashMap<Integer, BaseButton>();
+		private final HashMap<Integer, BaseButton> menuButtons = new HashMap<>();
 		private String openMsg = null;
 
 		Builder() {
@@ -192,9 +192,8 @@ public class BaseMenu implements InventoryHolder {
 
 			for (int i = 0; i < 9; i++) {
 				int slot = 9 * row + i;
-				if (!this.menuButtons.containsKey(slot)) {
-					this.menuButtons.put(slot, BaseButton.background());
-				}
+				
+				menuButtons.computeIfAbsent(slot, k -> BaseButton.background());
 			}
 
 			return this;
@@ -204,9 +203,7 @@ public class BaseMenu implements InventoryHolder {
 
 			for (int i = 0; i < (this.menuSize / 9); i++) {
 				int slot = 9 * i + column;
-				if (!this.menuButtons.containsKey(slot)) {
-					this.menuButtons.put(slot, BaseButton.background());
-				}
+				menuButtons.computeIfAbsent(slot, k -> BaseButton.background());
 			}
 
 			return this;
@@ -230,9 +227,9 @@ public class BaseMenu implements InventoryHolder {
 	 */
 	public static class PagedBuilder {
 		private String menuTitle = "ip-title";
-		private int menuSize = 54;
-		private HashMap<Integer, BaseButton> menuButtons = new HashMap<Integer, BaseButton>();
-		private ArrayList<ArrayList<BaseButton>> pageButtons = new ArrayList<ArrayList<BaseButton>>();
+		private final int menuSize = 54;
+		private final HashMap<Integer, BaseButton> menuButtons = new HashMap<>();
+		private final ArrayList<ArrayList<BaseButton>> pageButtons = new ArrayList<>();
 		private String openMsg = null;
 
 		PagedBuilder() {
@@ -259,7 +256,7 @@ public class BaseMenu implements InventoryHolder {
 		 * @param buttonList - List of buttons entered
 		 * @return Builder
 		 */
-		public PagedBuilder setContents(ArrayList<BaseButton> buttonList) {
+		public PagedBuilder setContents(List<BaseButton> buttonList) {
 			int pageNum = Math.floorDiv(buttonList.size(), 28) + 1;
 
 			for (int i = 0; i < pageNum; i++) {

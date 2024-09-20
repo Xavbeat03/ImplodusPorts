@@ -1,12 +1,13 @@
 package me.NinjaMandalorian.ImplodusPorts.ui.tasks;
 
+import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class CommandTask implements BaseTask {
 
-	private String commandString;
-	private Boolean closeMenu = false;
+	private final String commandString;
+	private boolean closeMenu = false;
 
 	public CommandTask(String command) {
 		this.commandString = command;
@@ -22,6 +23,7 @@ public class CommandTask implements BaseTask {
 		Player player = (Player) event.getWhoClicked();
 		player.chat(commandString);
 		if (closeMenu) player.closeInventory();
+		ImplodusPorts.getInstance().getLogger().info("CommandTask: Command executed by " + player.getName() + ": " + commandString);
 	}
 
 }

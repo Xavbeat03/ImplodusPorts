@@ -1,5 +1,6 @@
 package me.NinjaMandalorian.ImplodusPorts.ui;
 
+import me.NinjaMandalorian.ImplodusPorts.ImplodusPorts;
 import me.NinjaMandalorian.ImplodusPorts.ui.tasks.BaseTask;
 import me.NinjaMandalorian.ImplodusPorts.ui.tasks.MessageTask;
 import net.md_5.bungee.api.ChatColor;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a button in the Inventory Menu
@@ -28,8 +30,6 @@ public class BaseButton {
 
 	private BaseButton() {
 	}
-
-	;
 
 	public static BaseButton create() {
 		BaseButton button = new BaseButton();
@@ -60,7 +60,7 @@ public class BaseButton {
 	/**
 	 * Gets the button's task
 	 *
-	 * @return
+	 * @return task
 	 */
 	public BaseTask getTask() {
 		return this.task;
@@ -71,25 +71,25 @@ public class BaseButton {
 	/**
 	 * Gets the metadata of the button
 	 *
-	 * @return
+	 * @return metadata
 	 */
-	public HashMap<String, String> getMetadata() {
+	public Map<String, String> getMetadata() {
 		return this.metadata;
 	}
 
 	/**
 	 * Sets the metadata of the button
 	 *
-	 * @param map
+	 * @param map metadata
 	 */
-	public void setMetadata(HashMap<String, String> map) {
-		this.metadata = map;
+	public void setMetadata(Map<String, String> map) {
+		this.metadata = (HashMap<String, String>) map;
 	}
 
 	/**
 	 * Gets the item stack of button
 	 *
-	 * @return
+	 * @return itemStack
 	 */
 	public ItemStack getItemStack() {
 		return this.itemStack;
@@ -98,11 +98,15 @@ public class BaseButton {
 	/**
 	 * Makes the Button glow
 	 *
-	 * @return
+	 * @return button
 	 */
 	public BaseButton glow() {
 		this.itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
 		ItemMeta meta = this.itemStack.getItemMeta();
+		if(meta == null) {
+			ImplodusPorts.getInstance().getLogger().warning("ItemMeta is null for " + this.itemStack.getType().name());
+			return this;
+		}
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		this.itemStack.setItemMeta(meta);
 		return this;
@@ -111,8 +115,8 @@ public class BaseButton {
 	/**
 	 * Sets the itemstack of the button
 	 *
-	 * @param itemStack
-	 * @return
+	 * @param itemStack itemStack
+	 * @return button
 	 */
 	public BaseButton itemStack(ItemStack itemStack) {
 		this.itemStack = itemStack;
@@ -122,8 +126,8 @@ public class BaseButton {
 	/**
 	 * Sets the task
 	 *
-	 * @param task
-	 * @return
+	 * @param task task
+	 * @return button
 	 */
 	public BaseButton task(BaseTask task) {
 		this.task = task;
@@ -133,8 +137,8 @@ public class BaseButton {
 	/**
 	 * Sets the quantity of the button's stack
 	 *
-	 * @param num
-	 * @return
+	 * @param num quantity
+	 * @return button
 	 */
 	public BaseButton quantity(int num) {
 		this.itemStack.setAmount(num);
@@ -144,12 +148,16 @@ public class BaseButton {
 	/**
 	 * Renames the button
 	 *
-	 * @param name
-	 * @return
+	 * @param name name
+	 * @return button
 	 */
 	public BaseButton name(String name) {
 		name = ChatColor.translateAlternateColorCodes('&', name);
 		ItemMeta meta = this.itemStack.getItemMeta();
+		if(meta == null) {
+			ImplodusPorts.getInstance().getLogger().warning("ItemMeta is null for " + this.itemStack.getType().name());
+			return this;
+		}
 		meta.setDisplayName(ChatColor.RESET + name);
 		this.itemStack.setItemMeta(meta);
 		return this;
@@ -158,11 +166,15 @@ public class BaseButton {
 	/**
 	 * Sets the button's lore
 	 *
-	 * @param lore
-	 * @return
+	 * @param lore lore
+	 * @return button
 	 */
 	public BaseButton lore(List<String> lore) {
 		ItemMeta meta = this.itemStack.getItemMeta();
+		if (meta == null) {
+			ImplodusPorts.getInstance().getLogger().warning("ItemMeta is null for " + this.itemStack.getType().name());
+			return this;
+		}
 		meta.setLore(lore);
 		this.itemStack.setItemMeta(meta);
 		return this;
@@ -172,9 +184,9 @@ public class BaseButton {
 	 * Sets the button's lore.
 	 * <br> Split with '\n'
 	 *
-	 * @param lore
-	 * @return
-	 */
+	 * @param lore lore
+	 * @return button
+	 */ 
 	public BaseButton lore(String lore) {
 		return lore(Arrays.asList(lore.split("\n")));
 	}
@@ -182,8 +194,8 @@ public class BaseButton {
 	/**
 	 * Runs the button task.
 	 *
-	 * @param e
-	 * @return
+	 * @param e InventoryClickEvent
+	 * @return button
 	 */
 	public BaseButton run(InventoryClickEvent e) {
 		if (this.task != null) this.task.run(e);
