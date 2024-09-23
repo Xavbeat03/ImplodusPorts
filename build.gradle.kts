@@ -18,6 +18,10 @@ plugins {
     idea
 }
 
+group = "me.ninjamandalorian"
+
+version = "1.3.0"
+description = "ImplodusPorts"
 val mainPackage = "${project.group}.${project.name.lowercase()}"
 applyCustomVersion()
 
@@ -70,9 +74,7 @@ dependencies {
     api(libs.net.kyori.adventure.api)
     api(libs.net.kyori.adventure.platform.bukkit)
     compileOnly(libs.org.spigotmc.spigot.api)
-    compileOnly(libs.com.github.milkbowl.vaultapi)
-    compileOnly(libs.com.github.llmdl.towny)
-    compileOnly(libs.us.dynmap.dynmap.api)
+
 
     // API
     implementation("com.github.milkdrinkers:crate-api:2.1.0")
@@ -93,6 +95,9 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6") {
         exclude("me.clip.placeholderapi.libs", "kyori")
     }
+    compileOnly(libs.com.github.milkbowl.vaultapi)
+    compileOnly(libs.com.github.llmdl.towny)
+    compileOnly(libs.us.dynmap.dynmap.api)
     
     // Database Dependencies (Core)
     implementation("com.zaxxer:HikariCP:5.1.0")
@@ -131,10 +136,7 @@ dependencies {
     testImplementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
 }
 
-group = "me.NinjaMandalorian"
-version = "1.2.3"
-description = "ImplodusPorts"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+
 
 publishing {
     publications.create<MavenPublication>("maven") {
@@ -229,12 +231,13 @@ tasks {
             url("https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/build/libs/ProtocolLib.jar")
             github("PlaceholderAPI", "PlaceholderAPI", "2.11.4", "PlaceholderAPI-2.11.4.jar")
             github("EssentialsX", "Essentials", "2.20.1", "EssentialsX-2.20.1.jar")
+            github("TownyAdvanced", "Towny", "0.100.4.3", "towny-0.100.4.3.jar")
         }
     }
 }
 
 tasks.named<Jar>("sourcesJar") { // Required for sources jar generation with jOOQ
-    dependsOn(tasks.jooqCodegen)
+    //dependsOn(tasks.jooqCodegen)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
@@ -249,7 +252,7 @@ bukkit { // Options: https://github.com/Minecrell/plugin-yml#bukkit
     description = "${project.description}"
     authors = listOf("NinjaMandalorian, Xavbeat03")
     contributors = listOf()
-    apiVersion = "1.20.4"
+    apiVersion = "1.19"
 
     // Misc properties
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD // STARTUP or POSTWORLD

@@ -38,6 +38,7 @@ Ports will delete themselves if they're in a claimed towny townblock and that to
 
 * Towny 0.98.6.0 and up
 * VaultAPI
+* Some Economy Plugin
 * (Soft) Dynmap
 
 **Note:** these commands can only be run by individuals with the appropriate admin permissions.
