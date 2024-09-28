@@ -23,6 +23,10 @@ public class CommandHandler implements Reloadable {
 	@Override
 	public void onEnable() {
 		CommandAPI.onEnable();
+		
+		// Register commands
+		CommandIports.registerCommandIports();
+		
 	}
 
 	@Override

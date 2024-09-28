@@ -136,8 +136,7 @@ public class ImplodusPortsCommands implements CommandExecutor, TabCompleter {
 					travelCommand(player, StringHelper.remFirst(args));
 					return true;
 				case "next":
-					player.playSound(player, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-					TravelHandler.scheduleNext(player);
+					
 					return true;
 				case "changesize":
 					if (player.hasPermission("implodusports.admin.changesize")) {
