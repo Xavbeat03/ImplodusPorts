@@ -7,6 +7,9 @@ public class CommandIports {
 		return new CommandAPICommand("implodusports")
 			.withAliases("iports")
 			.withShortDescription("Main command for Implodusports")
+			.executesPlayer((player, args) -> {
+				player.sendMessage("Implodusports v1.3");
+			})
 			.withSubcommands(
 				CommandNext.registerCommandNext(),
 				CommandDestroy.registerCommandDestroy(),

@@ -25,7 +25,7 @@ public class CommandHandler implements Reloadable {
 		CommandAPI.onEnable();
 		
 		// Register commands
-		CommandIports.registerCommandIports();
+		CommandIports.registerCommandIports().register();
 		
 	}
 
