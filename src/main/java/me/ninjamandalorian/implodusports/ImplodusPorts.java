@@ -1,6 +1,7 @@
 package me.ninjamandalorian.implodusports;
 
 import com.palmergames.bukkit.towny.TownyAPI;
+import me.ninjamandalorian.implodusports.command.CommandHandler;
 import me.ninjamandalorian.implodusports.command.ImplodusPortsCommands;
 import me.ninjamandalorian.implodusports.data.DataManager;
 import me.ninjamandalorian.implodusports.data.PortDataManager;
@@ -10,6 +11,7 @@ import me.ninjamandalorian.implodusports.object.Port;
 import me.ninjamandalorian.implodusports.settings.Settings;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.milkbowl.vault.economy.Economy;
+import org.checkerframework.checker.units.qual.C;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.MarkerAPI;
 import org.bukkit.Bukkit;
@@ -31,6 +33,7 @@ public class ImplodusPorts extends JavaPlugin {
 	private BukkitAudiences adventure;
 	private DynmapAPI dynmapAPI;
 	private MarkerAPI markerAPI;
+	private CommandHandler CommandHandler;
 	public Economy getEconomy() {
 		return econ;
 	}
@@ -39,6 +42,7 @@ public class ImplodusPorts extends JavaPlugin {
 	public DynmapAPI getDynmapAPI() { return dynmapAPI; }
 	public MarkerAPI getMarkerAPI() { return markerAPI; }
 	public boolean dynmapIsEnabled = false;
+	
 
 	// Private class variables
 	private PluginManager pm;
@@ -59,7 +63,7 @@ public class ImplodusPorts extends JavaPlugin {
 		Port.initPorts();
 
 		// Register commands
-		new ImplodusPortsCommands();
+		CommandHandler.onEnable();
 
 		// Register listeners
 		pm.registerEvents(new InventoryListener(), instance);
@@ -76,10 +80,25 @@ public class ImplodusPorts extends JavaPlugin {
 			dynmapHandler.resetPortMarkers();
 		}
 	}
+	
+	public void onLoad() {
+		
+		// Initialize Module Objects
+		CommandHandler = new CommandHandler(this);
+		
+		// Load Modules
+		CommandHandler.onLoad();
+	}
 
 	public void onDisable() {
 		Bukkit.getLogger().info("Disabling ImplodusPorts");
 		PortDataManager.savePortData(Port.getPorts());
+	}
+	
+	public void onReload() {
+		onDisable();
+		onLoad();
+		onEnable();
 	}
 
 	/**
