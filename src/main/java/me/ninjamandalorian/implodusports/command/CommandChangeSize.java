@@ -2,6 +2,7 @@ package me.ninjamandalorian.implodusports.command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import me.ninjamandalorian.implodusports.handler.TravelHandler;
 import me.ninjamandalorian.implodusports.helper.PortHelper;
@@ -14,17 +15,18 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.List;
 
-public class CommandChangeSize {
+class CommandChangeSize {
 	
 	private static final ArgumentSuggestions intSuggestion = ArgumentSuggestions.strings("1", "2", "3", "4");
 	
 	private CommandChangeSize(){}
 	
+	//TODO command doesn't work
 	public static CommandAPICommand registerCommandChangeSize() {
 		return new CommandAPICommand("changesize")
 			.withPermission("implodusports.admin.changesize")
 			.withShortDescription("Changes the size of the player")
-			.withArguments((new StringArgument("size")).replaceSuggestions(intSuggestion))
+			.withArguments((new IntegerArgument("size")).replaceSuggestions(intSuggestion))
 			.executesPlayer((player, args) -> {
 				changeSizeCommand(player, StringHelper.remFirst(args.rawArgs()));
 			});

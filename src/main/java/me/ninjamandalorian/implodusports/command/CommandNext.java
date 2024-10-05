@@ -4,10 +4,11 @@ import dev.jorel.commandapi.CommandAPICommand;
 import me.ninjamandalorian.implodusports.handler.TravelHandler;
 import org.bukkit.Sound;
 
-public class CommandNext {
+class CommandNext {
 	
 	private CommandNext(){}
-	
+
+	//TODO command doesn't work	
 	public static CommandAPICommand registerCommandNext() {
 		return new CommandAPICommand("next")
 			.withShortDescription("Starts journey to the next location")

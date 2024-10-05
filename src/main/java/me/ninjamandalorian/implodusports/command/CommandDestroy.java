@@ -10,10 +10,11 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-public class CommandDestroy {
+class CommandDestroy {
 	
 	private CommandDestroy(){}
-	
+
+	//TODO command doesn't work
 	public static CommandAPICommand registerCommandDestroy() {
 		return new CommandAPICommand("destroy")
 			.withPermission("implodusports.admin.destroy")
