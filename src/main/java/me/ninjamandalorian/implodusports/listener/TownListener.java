@@ -31,6 +31,7 @@ public class TownListener implements Listener{
 	public void onTownUnclaimEvent(TownUnclaimEvent e) {
 		Logger.log("[IPorts] Town unclaim event, deleting relevant ports.");
 
+		if(Port.getPort(e.getTown()) == null) return;
 		Location signLoc = Port.getPort(e.getTown()).getSignLocation();
 		WorldCoord signWorldCoord = new WorldCoord(signLoc.getWorld().getName(), signLoc.getBlockX(), signLoc.getBlockZ());
 		WorldCoord eventWorldCoord = e.getWorldCoord();

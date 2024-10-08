@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Represents a button in the Inventory Menu
- * Contains the ItemStack, BaseTask & Any other metadata.
+ * Contains the ItemStack, BaseTask and Any other metadata.
  *
  * @author NinjaMandalorian
  */

@@ -101,7 +101,7 @@ public class DataManager {
 	/**
 	 * Retrieves raw data of file (UTF-8)
 	 *
-	 * @param path - File path of raw data
+	 * @param pathString - File path string of raw data
 	 * @return String of file path
 	 */
 	public static String getRawData(String pathString) {

@@ -1,4 +1,4 @@
-package me.ninjamandalorian.implodusports.dymap;
+package me.ninjamandalorian.implodusports.dynmap;
 
 import me.ninjamandalorian.implodusports.ImplodusPorts;
 import me.ninjamandalorian.implodusports.object.Port;

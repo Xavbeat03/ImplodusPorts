@@ -19,7 +19,7 @@ import java.util.List;
 public class PortMenu {
 
 	/**
-	 * Creates the base menu for a port, showing all travel-able ports & a button to open global menu.
+	 * Creates the base menu for a port, showing all travel-able ports and a button to open global menu.
 	 *
 	 * @param player - Player opening menu
 	 * @param port   - Port to generate menu from
