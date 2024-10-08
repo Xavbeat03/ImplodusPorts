@@ -19,8 +19,6 @@ public class BlockListener implements Listener {
 		if (block.getType().toString().contains("SIGN")) {
 			Port port = Port.getPort(block.getLocation());
 			
-			Sign sign = (Sign) block.getState();
-			
 			if (port == null) return;
 
 			if (player.hasPermission("implodusports.admin.destroy")) {
