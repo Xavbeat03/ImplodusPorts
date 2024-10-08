@@ -14,6 +14,9 @@ A UI based port system for Minecraft.
 * ```/iports reload``` : Reloads the config file
   * Permission Node: ```implodusports.admin.reload```
 * ```/iports next``` : Starts the next travel of a multi-part journey 
+  * Permission Node: N/A
+* ```/iports``` : Gives a status on the plugin
+  * Permission Node: N/A
 
 ## Creating a port
 

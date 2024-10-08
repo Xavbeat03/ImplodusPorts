@@ -4,10 +4,12 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
+import dev.jorel.commandapi.executors.CommandArguments;
 import me.ninjamandalorian.implodusports.handler.TravelHandler;
 import me.ninjamandalorian.implodusports.helper.PortHelper;
 import me.ninjamandalorian.implodusports.helper.StringHelper;
 import me.ninjamandalorian.implodusports.object.Port;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -28,18 +30,27 @@ class CommandChangeSize {
 			.withShortDescription("Changes the size of the player")
 			.withArguments((new IntegerArgument("size")).replaceSuggestions(intSuggestion))
 			.executesPlayer((player, args) -> {
-				changeSizeCommand(player, StringHelper.remFirst(args.rawArgs()));
+				changeSizeCommand(player, args);
 			});
 	}
 
 
-	private static void changeSizeCommand(Player player, String[] args) {
+	private static void changeSizeCommand(Player player, CommandArguments args) {
 		int newSize = 0;
-		try {
-			newSize = Math.max(Math.min(4, Integer.parseInt(args[0])), 1);
-		} catch (NumberFormatException e) {
+		if(args.count() < 1){
+			player.sendMessage("%s[IPorts]%s Didn't provide a size to change to, exiting command.".formatted(ChatColor.RED, ChatColor.WHITE));
+			return;
+		} else if (args.count() > 1) {
+			player.sendMessage("%s[IPorts]%s Additional non-necessary arguments provided, exiting command.".formatted(ChatColor.RED, ChatColor.WHITE));
 			return;
 		}
+		
+		try {
+			newSize = Math.max(Math.min(4, (Integer) args.get(0)), 1);
+		} catch (NumberFormatException | NullPointerException e) {
+			return;
+		}
+		
 		Block targetBlock = player.getTargetBlock(null, 5);
 		if (targetBlock == null) return;
 		Port port = Port.getPort(targetBlock);

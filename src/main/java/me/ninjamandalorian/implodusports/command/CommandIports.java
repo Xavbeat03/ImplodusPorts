@@ -9,6 +9,7 @@ public class CommandIports {
 			.withShortDescription("Main command for Implodusports")
 			.executesPlayer((player, args) -> {
 				player.sendMessage("Implodusports v1.3");
+				player.sendMessage("Created by NinjaMandalorian");
 			})
 			.withSubcommands(
 				CommandNext.registerCommandNext(),

@@ -7,8 +7,7 @@ import org.bukkit.Sound;
 class CommandNext {
 	
 	private CommandNext(){}
-
-	//TODO command doesn't work	
+	
 	public static CommandAPICommand registerCommandNext() {
 		return new CommandAPICommand("next")
 			.withShortDescription("Starts journey to the next location")
