@@ -55,7 +55,7 @@ repositories {
     maven("https://maven.athyrium.eu/releases")
 
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
-    maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
+    maven ( "https://repo.dmulloy2.net/repository/public/" )
     maven("https://jitpack.io/") {
         content {
             includeGroup("com.github.MilkBowl") // VaultAPI
@@ -91,7 +91,8 @@ dependencies {
     // Plugin Dependencies
     implementation("org.bstats:bstats-bukkit:3.0.3")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
+
     compileOnly("me.clip:placeholderapi:2.11.6") {
         exclude("me.clip.placeholderapi.libs", "kyori")
     }

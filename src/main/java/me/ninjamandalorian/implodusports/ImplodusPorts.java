@@ -138,11 +138,17 @@ public class ImplodusPorts extends JavaPlugin {
 			return;
 		}
 		dynmapAPI = (DynmapAPI) pm.getPlugin("dynmap");
+		if(dynmapAPI == null) {
+			Bukkit.getLogger().severe("DynmapAPI could not be loaded.");
+			return;
+		}
+
 		markerAPI = dynmapAPI.getMarkerAPI();
 		if (markerAPI == null) {
 			Bukkit.getLogger().severe("MarkerAPI could not be loaded.");
 			return;
 		}
+
 		dynmapIsEnabled = true;
 	}
 
