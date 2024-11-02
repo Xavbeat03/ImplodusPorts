@@ -20,7 +20,7 @@ plugins {
 
 group = "me.ninjamandalorian"
 
-version = "1.3.0"
+version = "1.3.1"
 description = "ImplodusPorts"
 val mainPackage = "${project.group}.${project.name.lowercase()}"
 applyCustomVersion()
@@ -52,9 +52,7 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://mvn-repo.arim.space/lesser-gpl3/")
 
-    maven("https://maven.athyrium.eu/releases")
 
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") // PlaceholderAPI
     maven ( "https://repo.dmulloy2.net/repository/public/" )
     maven("https://jitpack.io/") {
         content {
@@ -77,8 +75,6 @@ dependencies {
 
 
     // API
-    implementation("com.github.milkdrinkers:crate-api:2.1.0")
-    implementation("com.github.milkdrinkers:crate-yaml:2.1.0")
     implementation("com.github.milkdrinkers:colorparser:2.0.3") {
         exclude("net.kyori")
     }
@@ -91,11 +87,7 @@ dependencies {
     // Plugin Dependencies
     implementation("org.bstats:bstats-bukkit:3.0.3")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
 
-    compileOnly("me.clip:placeholderapi:2.11.6") {
-        exclude("me.clip.placeholderapi.libs", "kyori")
-    }
     compileOnly(libs.com.github.milkbowl.vaultapi)
     compileOnly(libs.com.github.llmdl.towny)
     compileOnly(libs.us.dynmap.dynmap.api)

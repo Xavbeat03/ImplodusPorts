@@ -57,24 +57,29 @@ public class DynmapHandler {
 
     private void placeAllPortMarkers() {
         for (Port port : Port.getPorts().values()) {
+
             String portSize = portSizeString(port);
             String townName = port.getTown().getName();
             String markerID = townName + "__port";
             Marker marker = markerSet.createMarker
-                    (
-                        markerID,
-                        "Port of " + townName,
-                        port.getTown().getWorld().getName(),
-                        port.getSignLocation().getX(),
-                        port.getSignLocation().getY(),
-                        port.getSignLocation().getZ(),
-                        markerIcon,
-                        false
-                    );
+                (
+                    markerID,
+                    "Port of " + townName,
+                    port.getTown().getWorld().getName(),
+                    port.getSignLocation().getX(),
+                    port.getSignLocation().getY(),
+                    port.getSignLocation().getZ(),
+                    markerIcon,
+                    false
+                );
+            if(marker == null) {
+                continue;
+            }
             String infobox = "<div class=\\\"regioninfo\\\"><div class=\"\\infowindow\\\"><span style=\"0font-size: 120%;\">Port of @townname</span><br />Type: <span style=\"0font-weight: bold;\">@portsize</span></div></div>";
             infobox = infobox.replaceAll("@townname", townName);
             infobox = infobox.replaceAll("@portsize", portSize.substring(2)); // Remove color code (Ex: §bJetty -> Jetty)
             marker.setDescription(infobox);
+
         }
     }
 }
