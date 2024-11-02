@@ -133,17 +133,28 @@ public class ImplodusPorts extends JavaPlugin {
 	 *  Checks if Towny is installed and sets up TownyAPI
 	 */
 	private void setupDynmap() {
-		if ((pm.getPlugin("dynmap") == null)) {
+		try {
+			if ((pm.getPlugin("dynmap") == null)) {
+				Bukkit.getLogger().severe("Dynmap was not found.");
+				return;
+			}
+			dynmapAPI = (DynmapAPI) pm.getPlugin("dynmap");
+			if (dynmapAPI == null) {
+				Bukkit.getLogger().severe("DynmapAPI could not be loaded.");
+				return;
+			}
+
+			markerAPI = dynmapAPI.getMarkerAPI();
+			if (markerAPI == null) {
+				Bukkit.getLogger().severe("MarkerAPI could not be loaded.");
+				return;
+			}
+
+			dynmapIsEnabled = true;
+		} catch (Exception e) {
 			Bukkit.getLogger().severe("Dynmap was not found.");
-			return;
+			dynmapIsEnabled = false;
 		}
-		dynmapAPI = (DynmapAPI) pm.getPlugin("dynmap");
-		markerAPI = dynmapAPI.getMarkerAPI();
-		if (markerAPI == null) {
-			Bukkit.getLogger().severe("MarkerAPI could not be loaded.");
-			return;
-		}
-		dynmapIsEnabled = true;
 	}
 
 }
